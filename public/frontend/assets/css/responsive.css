@@ -1,0 +1,338 @@
+@media (max-width: 992px) {
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #6f6f6f;
+    text-align: left;
+    background-color: #fff;
+    overflow-x: hidden;
+  }
+  /* Menu Button */
+  .menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 40;
+    background-color: #d19c97;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  /* Overlay */
+  .overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 45;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.3s,
+      visibility 0.3s;
+  }
+
+  .overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 320px;
+    height: 100%;
+    background-color: white;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  /* Sidebar Header */
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .sidebar-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+  }
+
+  .close-btn:hover {
+    background-color: #f3f4f6;
+  }
+
+  .close-btn svg {
+    display: block;
+    width: 24px;
+    height: 24px;
+    color: #6b7280;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+  }
+
+  .tab-btn:hover {
+    color: #1f2937;
+    background-color: #f9fafb;
+  }
+
+  .tab-btn.active {
+    color: #2563eb;
+    background-color: #eff6ff;
+  }
+
+  .tab-btn.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #2563eb;
+  }
+
+  /* Tab Content */
+  #navbar .tab-content {
+    display: none;
+    padding: 8px;
+    height: calc(100vh - 130px);
+    overflow-y: auto;
+  }
+
+  #navbar .tab-content.active {
+    display: block;
+  }
+
+  /* Menu Items */
+  #navbar .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #374151;
+    font-weight: 500;
+    transition: background-color 0.2s;
+  }
+
+  #navbar .menu-item:hover {
+    background-color: #f3f4f6;
+  }
+
+  #navbar .menu-item svg {
+    width: 20px;
+    height: 20px;
+    color: #6b7280;
+    transition: color 0.2s;
+  }
+
+  #navbar .menu-item:hover svg {
+    color: #2563eb;
+  }
+
+  #navbar .menu-item:hover {
+    color: #1f2937;
+  }
+
+  /* Category Items */
+  .category-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: none;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-align: left;
+  }
+
+  .category-item:hover {
+    background-color: #f3f4f6;
+  }
+
+  .category-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .category-left svg {
+    width: 20px;
+    height: 20px;
+    color: #6b7280;
+    transition: color 0.2s;
+  }
+
+  .category-item:hover .category-left svg {
+    color: #2563eb;
+  }
+
+  .category-name {
+    font-weight: 500;
+    color: #374151;
+  }
+
+  .category-item:hover .category-name {
+    color: #1f2937;
+  }
+
+  .category-count {
+    font-size: 12px;
+    background-color: #e5e7eb;
+    color: #6b7280;
+    padding: 2px 8px;
+    border-radius: 12px;
+    transition: all 0.2s;
+  }
+
+  .category-item:hover .category-count {
+    background-color: #dbeafe;
+    color: #2563eb;
+  }
+
+  /* Demo Content */
+  .demo-content {
+    max-width: 800px;
+    margin: 80px auto 0;
+    background: white;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .demo-content h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 16px;
+  }
+
+  .demo-content p {
+    color: #6b7280;
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+
+  .demo-content ul {
+    list-style: none;
+    color: #6b7280;
+    line-height: 1.8;
+  }
+
+  .demo-content li::before {
+    content: "•";
+    margin-right: 8px;
+  }
+
+  .carousel-item {
+    height: 250px !important;
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 50px !important;
+  }
+  € #all_product .title h2 {
+    font-size: 20px;
+    font-weight: 600;
+    /* margin-bottom: 30px; */
+  }
+
+  #all_product .card_parent {
+    padding: 16px !important;
+  }
+  #featured_product .card_parent {
+    padding: 16px !important;
+  }
+
+  #featured_product .title h2 {
+    font-size: 18px;
+    font-weight: 600;
+    /* margin-bottom: 30px; */
+  }
+
+  #banner_2 .image {
+    margin-bottom: 12px;
+  }
+
+  .carousel-item img {
+    /* height: 250px !important; */
+    object-fit: cover;
+  }
+
+  #related_product .related-carousel .owl-next {
+    right: 0 !important;
+  }
+  #related_product .related-carousel .owl-prev {
+    left: 0 !important;
+  }
+
+  #cart_list .table {
+    width: 690px !important;
+  }
+  #cart_list .name {
+    padding: 0 8px !important;
+  }
+
+  #checkout .child_row label {
+    font-size: 16px;
+    margin-bottom: 12px !important;
+  }
+
+  #contact .contact-info .icon {
+    padding: 0 !important;
+  }
+}
