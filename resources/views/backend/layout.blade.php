@@ -3,7 +3,7 @@
 <!-- [Head] start -->
 
 <head>
-    <title>Home | Gradient Able Dashboard Template</title>
+    <title>@yield('backend_title')</title>
     <!-- [Meta] -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
@@ -30,6 +30,9 @@
     <link rel="stylesheet" href="{{ asset('backend/assets/fonts/fontawesome.css') }}" />
     <!-- [Material Icons] https://fonts.google.com/icons -->
     <link rel="stylesheet" href="{{ asset('backend/assets/fonts/material.css') }}" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+        rel="stylesheet" />
     <!-- [Template CSS Files] -->
     <link rel="stylesheet" href="{{ asset('backend/assets/css/style.css') }}" id="main-style-link" />
     <link rel="stylesheet" href="{{ asset('backend/assets/css/style-preset.css') }}" />
@@ -66,15 +69,33 @@
                                     class="ph ph-gauge"></i></span><span class="pc-mtext">Dashboard</span></a>
                     </li>
                     <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link"><span class="pc-micon"> <iconify-icon icon="eos-icons:role-binding" width="24" height="24"></iconify-icon>
+                        <a href="#!" class="pc-link"><span class="pc-micon"> <iconify-icon
+                                    icon="eos-icons:role-binding" width="24" height="24"></iconify-icon>
                             </span><span class="pc-mtext">Role & Permission</span><span class="pc-arrow"><i
                                     data-feather="chevron-right"></i></span></a>
                         <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="{{ route('dashboard.users.user-list') }}">User List</a></li>
-                            
-                               
-                                    <li class="pc-item"><a class="pc-link" href="{{ route('dashboard.role-permission.role-list') }}">Role List</a></li>
-                            
+                            <li class="pc-item"><a class="pc-link" href="{{ route('dashboard.users.user-list') }}">User
+                                    List</a></li>
+
+
+                            <li class="pc-item"><a class="pc-link"
+                                    href="{{ route('dashboard.role-permission.role-list') }}">Role List</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link"><span class="pc-micon"><iconify-icon
+                                    icon="icon-park-outline:ad-product" width="24" height="24"></iconify-icon>
+                            </span><span class="pc-mtext">Product</span><span class="pc-arrow"><i
+                                    data-feather="chevron-right"></i></span></a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item"><a class="pc-link"
+                                    href="{{ route('dashboard.categories.category-list') }}">Cetagory</a></li>
+
+
+                            <li class="pc-item"><a class="pc-link"
+                                    href="{{ route('dashboard.products.product-list') }}">Product List</a></li>
+
                         </ul>
                     </li>
 
@@ -164,7 +185,6 @@
     <!-- [ Main Content ] start -->
     <div class="pc-container">
         @yield('backend_content')
-
     </div>
 
     <x-toast />
@@ -186,6 +206,10 @@
     <script src="{{ asset('backend/assets/js/script.js') }}"></script>
     <script src="{{ asset('backend/assets/js/theme.js') }}"></script>
     <script src="{{ asset('backend/assets/js/plugins/feather.min.js') }}"></script>
+    {{-- jQuery (Select2 এর জন্য দরকার) --}}
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    {{-- Select2 JS --}}
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 
     <script>

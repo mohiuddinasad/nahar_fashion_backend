@@ -611,7 +611,7 @@
                         @endif
                     </div>
                     <div class="pf-user-name">{{ Auth::user()->name ?? 'Admin User' }}</div>
-                    <div class="pf-user-role">{{ Auth::user()->position ?? 'Super Admin' }}</div>
+                    <div class="pf-user-role">{{ $role ?? 'customer' }}</div>
                     <div class="pf-user-email">{{ Auth::user()->email ?? 'admin@example.com' }}</div>
                 </div>
 
@@ -777,7 +777,7 @@
                             <h3>Change Password</h3>
                             <p>Choose a strong password with at least 6 characters</p>
                         </div>
-                        
+
                         <div class="pf-form-body">
                             <form action="{{ route('dashboard.password.update') }}" method="POST">
                                 @csrf
@@ -822,10 +822,10 @@
                         <div class="pf-danger-header">⚠ Danger Zone</div>
                         <div class="pf-danger-body">
                             <p>Permanently delete your account and all associated data. This action cannot be undone.</p>
-                            <button class="pf-btn pf-btn-danger"
+                            <a href="{{ route('dashboard.profile.delete') }}" class="pf-btn pf-btn-danger"
                                 onclick="return confirm('Are you sure? This cannot be undone.')">
                                 Delete My Account
-                            </button>
+                            </a>
                         </div>
                     </div>
 

@@ -12,7 +12,9 @@ class MyProfileController extends Controller
 {
     public function index()
     {
-        return view('backend.profile.profile');
+        $role = Auth::user()->getRoleNames()->first();
+
+        return view('backend.profile.profile', compact('role'));
     }
 
     public function update(Request $request)
@@ -55,11 +57,27 @@ class MyProfileController extends Controller
         return redirect()->route('dashboard.profile')->with('success', 'Profile updated successfully.');
     }
 
+    public function delete()
+    {
+        $user = Auth::user();
+
+        // Delete user image if exists
+        if ($user->user_image && file_exists(public_path($user->user_image))) {
+            unlink(public_path($user->user_image));
+        }
+
+        $user->delete();
+
+        Auth::logout();
+
+        return redirect()->route('login')->with('success', 'Your profile has been deleted successfully.');
+    }
+
     public function updatePassword(Request $request)
     {
         $request->validate([
             'current_password' => 'required',
-            'new_password' => 'required|min:6|confirmed',
+            'new_password' => 'required|min:8|confirmed',
         ]);
 
         /** @var \App\Models\User $user */

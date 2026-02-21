@@ -253,7 +253,7 @@
     </div>
 
     {{-- ── Alerts ───────────────────────────────────── --}}
-    
+
     {{-- ── Search ───────────────────────────────────── --}}
     <div class="search-bar">
         <input type="text" id="searchInput" placeholder="  Search by name or email…">
@@ -442,7 +442,7 @@
             row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
         });
     });
-
+ 
     // ── Open Modal ─────────────────────────────────────
     function openRoleModal(userId, userName, currentRole) {
         document.getElementById('modalUserName').textContent = userName;
