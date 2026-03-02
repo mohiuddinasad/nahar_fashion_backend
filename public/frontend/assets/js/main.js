@@ -87,7 +87,7 @@
   });
 
   // Product Quantity
-  $(".quantity button").on("click", function () {
+  $(".quantity button").off("click", function () {
     var button = $(this);
     var oldValue = button.parent().parent().find("input").val();
     if (button.hasClass("btn-plus")) {
@@ -104,7 +104,7 @@
 
   $(function () {
     // First register any plugins
-    
+
      FilePond.registerPlugin(FilePondPluginImageTransform);
 
     // Turn input element into a pond
@@ -113,4 +113,7 @@
       storeAsFile: true,
     });
   });
+
+
+
 })(jQuery);

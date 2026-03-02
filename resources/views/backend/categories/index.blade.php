@@ -7,7 +7,7 @@
 @endpush
 
 @section('backend_content')
-    <div class="container-fluid">
+    <div class="container p-4">
 
         {{-- Page Header --}}
         <div class="d-flex justify-content-between align-items-center mb-4">

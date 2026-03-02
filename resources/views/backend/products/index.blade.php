@@ -1,13 +1,14 @@
 @extends('backend.layout')
-
+@section('backend_title')
+Product List
+@endsection
 @push('backend_css')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
 @endpush
 
 @section('backend_content')
-<div class="container-fluid">
-
+<div class="container p-4">
     {{-- Page Header --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold mb-0">Products</h2>
@@ -78,7 +79,6 @@
                         <th>Category</th>
                         <th>Price</th>
                         <th>Stock</th>
-                        <th>Featured</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -88,7 +88,7 @@
                         <td>{{ $products->firstItem() + $loop->index }}</td>
                         <td>
                             @if($product->productImage->first())
-                                <img src="{{ Storage::url($product->productImage->first()->image_path) }}"
+                                <img src="{{ Storage::url($product->productImage->first()->image_name) }}"
                                      width="55" height="55" style="object-fit:cover;" class="rounded">
                             @else
                                 <span class="text-muted">—</span>
@@ -118,7 +118,7 @@
                                 {{ ucfirst(str_replace('_', ' ', $product->stock_status)) }}
                             </span>
                         </td>
-                        <td>{{ $product->is_featured ? '✅' : '—' }}</td>
+
                         <td>
                             <a href="{{ route('dashboard.products.product-edit', $product) }}"
                                class="btn btn-sm btn-warning">Edit</a>
@@ -146,7 +146,7 @@
             </table>
 
             {{-- Pagination (keeps search params) --}}
-            {{ $products->links() }}
+            {{ $products->links('pagination::bootstrap-5') }}
 
         </div>
     </div>

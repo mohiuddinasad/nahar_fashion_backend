@@ -1,5 +1,7 @@
 @extends('backend.layout')
-
+@section('backend_title')
+User List
+@endsection
 @push('backend_css')
 <style>
 
@@ -442,7 +444,7 @@
             row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
         });
     });
- 
+
     // ── Open Modal ─────────────────────────────────────
     function openRoleModal(userId, userName, currentRole) {
         document.getElementById('modalUserName').textContent = userName;

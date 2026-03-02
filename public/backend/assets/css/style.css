@@ -16132,7 +16132,8 @@ pre[class*=language-] > code {
   display: inline-block;
 }
 .pc-sidebar .pc-link {
-  display: block;
+  display: flex;
+  align-items: center;
   padding: 14px 20px;
   color: var(--pc-sidebar-color);
   position: relative;

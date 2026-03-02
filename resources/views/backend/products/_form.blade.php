@@ -29,11 +29,19 @@
                         class="form-select @error('category_id') is-invalid @enderror" required>
                         <option value="">— Select Category —</option>
                         @foreach ($categories as $cat)
+                            {{-- Parent Category --}}
                             <option value="{{ $cat->id }}"
-                                data-level="{{ $cat->level }}"
                                 {{ old('category_id', $product->category_id ?? '') == $cat->id ? 'selected' : '' }}>
-                                {{ str_repeat('— ', $cat->level) . $cat->name }}
+                                {{ $cat->name }}
                             </option>
+
+                            {{-- Children Categories --}}
+                            @foreach ($cat->children as $child)
+                                <option value="{{ $child->id }}"
+                                    {{ old('category_id', $product->category_id ?? '') == $child->id ? 'selected' : '' }}>
+                                    &nbsp;&nbsp;↳ {{ $child->name }}
+                                </option>
+                            @endforeach
                         @endforeach
                     </select>
                     @error('category_id')

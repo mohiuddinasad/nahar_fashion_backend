@@ -1,7 +1,22 @@
+@php
+    $cart = session()->get('cart', []);
+    $qty = array_sum(array_column($cart, 'qty'));
+@endphp
+
+@php
+    $total_price = 0;
+@endphp
+
+@foreach ($cart as $id => $data)
+    @php
+        $total_price += $data['price'] * $data['qty'];
+    @endphp
+@endforeach
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="utf-8">
     <title>Nahar Fashion</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -53,13 +68,13 @@
                 </form>
             </div>
             <div class="col-lg-3 col-6 text-right">
-                <a href="wishlist.html" class="btn border">
+                <a href="{{ route('frontend.wishlist') }}" class="btn border">
                     <i class="fas fa-heart text-primary"></i>
-                    <span class="badge">0</span>
+                    <span class="badge" id="wishlistCount">{{ $wishlistCount }}</span>
                 </a>
-                <a href class="btn border">
+                <a href="{{ route('frontend.cart') }}" class="btn border">
                     <i class="fas fa-shopping-cart text-primary"></i>
-                    <span class="badge">0</span>
+                    <span id="cartCount" class="badge">{{ $qty ? $qty : 0 }}</span>
                 </a>
             </div>
         </div>
@@ -77,28 +92,30 @@
                 </a>
                 <nav class="collapse show position-absolute navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0 bg-light"
                     id="navbar-vertical" style="width: calc(100% - 30px); z-index: 999;">
-                    <div class="navbar-nav w-100 overflow-hidden" style="height: 410px">
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link" data-toggle="dropdown">Dresses <i
-                                    class="fa fa-angle-down float-right mt-1"></i></a>
-                            <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
-                                <a href class="dropdown-item">Men's
-                                    Dresses</a>
-                                <a href class="dropdown-item">Women's
-                                    Dresses</a>
-                                <a href class="dropdown-item">Baby's
-                                    Dresses</a>
-                            </div>
-                        </div>
-                        <a href class="nav-item nav-link">Shirts</a>
-                        <a href class="nav-item nav-link">Jeans</a>
-                        <a href class="nav-item nav-link">Swimwear</a>
-                        <a href class="nav-item nav-link">Sleepwear</a>
-                        <a href class="nav-item nav-link">Sportswear</a>
-                        <a href class="nav-item nav-link">Jumpsuits</a>
-                        <a href class="nav-item nav-link">Blazers</a>
-                        <a href class="nav-item nav-link">Jackets</a>
-                        <a href class="nav-item nav-link">Shoes</a>
+                    <div class="navbar-nav w-100" style="height: auto; ">
+
+                        @forelse ($categories as $category)
+                            @if ($category->children->count() > 0)
+                                <div class="nav-item dropdown">
+                                    <a href="{{ route('frontend.category-wise-product', $category->slug) }}"
+                                        class="nav-link" data-toggle="dropdown"> {{ $category->name }} <i
+                                            class="fa fa-angle-down float-right mt-1"></i></a>
+                                    <div
+                                        class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
+                                        @foreach ($category->children as $child)
+                                            <a href="{{ route('frontend.category-wise-product', $child->slug) }}"
+                                                class="dropdown-item">{{ $child->name }}</a>
+                                        @endforeach
+
+                                    </div>
+                                </div>
+                            @else
+                                <a href="{{ route('frontend.category-wise-product', $category->slug) }}"
+                                    class="nav-item nav-link">{{ $category->name }}</a>
+                            @endif
+                        @empty
+                            <p class="text-center">No category found</p>
+                        @endforelse
                     </div>
                 </nav>
             </div>
@@ -136,7 +153,7 @@
 
                         <!-- Menus Tab Content -->
                         <div class="tab-content" id="menus">
-                            <a href="#home" class="menu-item">
+                            <a href="{{ route('frontend.home') }}" class="menu-item">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
@@ -245,15 +262,21 @@
                     </div>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
-                            <a href="index.html" class="nav-item nav-link">Home</a>
-                            <a href="shop.html" class="nav-item nav-link">Shop</a>
+                            <a href="{{ route('frontend.home') }}" class="nav-item nav-link">Home</a>
+                            <a href="{{ route('frontend.shop') }}" class="nav-item nav-link">Shop</a>
                             <a href="shop.html" class="nav-item nav-link">Wholesale</a>
-                            <a href="contact.html" class="nav-item nav-link">Contact</a>
+                            <a href="{{ route('frontend.contact') }}" class="nav-item nav-link">Contact</a>
                             <a href="contact.html" class="nav-item nav-link">Track Order</a>
                         </div>
                         <div class="navbar-nav ml-auto py-0">
                             @auth
                                 <a href="{{ route('dashboard') }}" class="nav-item nav-link">Profile</a>
+                                <form action="{{ route('logout') }}" method="post">
+                                    @csrf
+
+                                    <button type="submit" class="nav-item nav-link btn">Logout</button>
+
+                                </form>
                             @else
                                 <a href="{{ route('login') }}" class="nav-item nav-link">Login</a>
                                 <a href="{{ route('register') }}" class="nav-item nav-link">Register</a>
@@ -265,6 +288,93 @@
         </div>
     </div>
     <!-- Navbar End -->
+
+    <!-- ========== Start cart popup ========== -->
+    <!-- Overlay -->
+
+    <section>
+
+
+        <div id="cartPopupOverlay" onclick="closePopup()">
+
+        </div>
+
+        <div id="cartPopup">
+
+            <!-- Left: Image Panel -->
+            <div class="cp-left">
+                <div class="cp-img-wrap">
+                    <img id="popupImage" src="https://via.placeholder.com/300x350" alt="Product">
+                    <div class="cp-img-shine"></div>
+                </div>
+
+                <!-- Floating decorative circles -->
+                <div class="cp-circle cp-circle-1"></div>
+                <div class="cp-circle cp-circle-2"></div>
+                <div class="cp-circle cp-circle-3"></div>
+            </div>
+
+            <!-- Right: Info Panel -->
+            <div class="cp-right">
+
+                <!-- Close -->
+                <a class="cp-close" onclick="closePopup()">
+                    <iconify-icon icon="mingcute:close-fill" width="18" height="18"></iconify-icon>
+                </a>
+
+                <!-- Animated content blocks -->
+                <div class="cp-anim-block" style="--delay: 0.05s">
+                    <div class="cp-category">✦ New Arrival</div>
+                    <h3 class="cp-name" id="popupName">Product Name</h3>
+                </div>
+
+                <div class="cp-anim-block" style="--delay: 0.1s">
+                    <div class="cp-price-row">
+                        <span class="cp-price" id="popupPrice">৳ 0.00</span>
+                        <span class="cp-badge">In Stock</span>
+                    </div>
+                </div>
+
+                <div class="cp-divider cp-anim-block" style="--delay: 0.15s"></div>
+
+                <!-- Variants -->
+                <div id="popupVariantSection" class="cp-anim-block" style="--delay: 0.2s">
+                    <p class="cp-label">Select Variant</p>
+                    <div id="popupVariants" class="cp-variants"></div>
+                </div>
+
+                <!-- Quantity -->
+                <div class="cp-qty-wrap cp-anim-block" style="--delay: 0.25s">
+                    <p class="cp-label">Quantity</p>
+                    <div class="cp-qty">
+                        <button id="popupQtyMinus" onclick="popupQtyChange(-1)" class="cp-qty-btn">−</button>
+                        <input type="number" id="popupQty" value="1" min="1" class="cp-qty-input">
+                        <button id="popupQtyPlus" onclick="popupQtyChange(1)" class="cp-qty-btn">+</button>
+                    </div>
+                </div>
+
+                <!-- Add to Cart Button -->
+                <a id="popupAddToCartLink" href="#" class="cp-add-btn cp-anim-block" style="--delay: 0.3s">
+                    <span>Add to Cart</span>
+                    <svg class="cp-btn-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                    <div class="cp-ripple"></div>
+                </a>
+
+
+
+            </div>
+        </div>
+
+        <input type="hidden" id="popupProductId" value="">
+        <input type="hidden" id="popupVariantId" value="">
+    </section>
+    <!-- ========== End cart popup ========== -->
+
+
     <!-- ========== Start banner ========== -->
     <div class="container">
 
@@ -351,17 +461,25 @@
                 <!-- Your existing row structure -->
                 <div class="slider-wrapper">
                     <div class="row slider-track" id="sliderTrack">
-                        <div class="col-lg-3 col-md-6 col-sm-12 slider-slide">
-                            <div class="category_box">
-                                <div class="image">
-                                    <img src="{{ asset('frontend/assets/img/sofa 1.webp') }}" alt="Categories Image"
-                                        class="img-fluid">
-                                </div>
-                                <div class="content">
-                                    <h4>Sofas</h4>
+                        @forelse ($categories as $category)
+                            <div class="col-lg-3 col-md-6 col-sm-12 slider-slide">
+                                <div class="category_box">
+                                    <a href="{{ route('frontend.category-wise-product', $category->slug) }}">
+                                        <div class="image">
+                                            <img src="{{ Storage::url($category->category_image) }}"
+                                                alt="{{ $category->name }}" class="img-fluid">
+                                        </div>
+                                    </a>
+                                    <div class="content">
+                                        <h4>{{ $category->name }}</h4>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @empty
+                            <div class="col-12 text-center">
+                                <p class="text-muted">No categories found.</p>
+                            </div>
+                        @endforelse
 
                     </div>
                 </div>
@@ -424,34 +542,75 @@
             </div>
             <hr>
             <div class="row pb-3">
-                <div class="col-lg-3 col-md-6 col-sm-12 p-2 card_parent">
-                    <div class="product_card">
-                        <div class="product-badge">
-                            <span class="badge bg-danger text-white">-20%</span>
-                        </div>
-                        <div class="product-image">
-                            <a href="detail.html"><img src="{{ asset('frontend/assets/img/sofa 2.jpg') }}"
-                                    alt="Colorful Stylish Shirt"></a>
-                            <div class="product-actions">
-                                <button class="action-btn wishlist-btn">
-                                    <i class="far fa-heart"></i>
-                                </button>
+
+                @forelse ($products as $product)
+                    <div class="col-lg-3 col-md-6 col-sm-12 p-2 card_parent">
+                        <div class="product_card">
+                            <div class="product-badge">
+                                @if ($product->discount_percentage > 0)
+                                    <span
+                                        class="badge bg-danger text-white">{{ $product->discount_percentage }}%</span>
+                                @endif
                             </div>
-                        </div>
-                        <div class="product-info">
-                            <h6 class="product-title">Colorful Stylish
-                                Shirt</h6>
-                            <div class="product-price">
-                                <span class="current-price">৳ 98.40</span>
-                                <span class="old-price">৳ 123.00</span>
+                            <div class="product-image">
+                                <a href="{{ route('frontend.product-details', $product->slug) }}">
+                                    <img src="{{ Storage::url($product->productImage->first()->image_name) }}"
+                                        alt="{{ $product->name }}">
+                                </a>
+                                <div class="product-actions">
+                                    @php
+                                        $isWishlisted = Auth::check()
+                                            ? Auth::user()->wishlists->contains('product_id', $product->id)
+                                            : false;
+                                    @endphp
+                                    <button type="button"
+                                        class="action-btn wishlist-btn {{ $isWishlisted ? 'wishlisted' : '' }}"
+                                        onclick="event.preventDefault(); toggleWishlist(this, {{ $product->id }})">
+                                        <i class="{{ $isWishlisted ? 'fas' : 'far' }} fa-heart"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <button class="add-to-cart-btn">
-                                <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>
-                                <span>Add to Cart</span>
-                            </button>
+                            <div class="product-info">
+                                <h6 class="product-title">{{ $product->name }}</h6>
+                                <div class="product-price">
+                                    <span class="current-price">৳{{ $product->price }}</span>
+                                    @if ($product->discount_price > 0)
+                                        <span class="old-price">৳ {{ $product->discount_price }}</span>
+                                    @endif
+                                </div>
+
+                                @if ($product->stock_status == 'out_of_stock')
+                                    <button class="add-to-cart-btn out_stock" style="cursor: not-allowed" disabled
+                                        data-id="{{ $product->id }}" data-name="{{ $product->name }}"
+                                        data-price="{{ $product->discount_price ?? $product->price }}"
+                                        data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
+                                        data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
+                                        <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>
+                                        <span>Out of Stock</span>
+                                    </button>
+                                @else
+                                    <button class="add-to-cart-btn" style="cursor: pointer"
+                                        onclick="openProductPopup(this)" data-id="{{ $product->id }}"
+                                        data-name="{{ $product->name }}"
+                                        data-price="{{ $product->discount_price ?? $product->price }}"
+                                        data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
+                                        data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
+                                        <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>
+                                        <span>Add to Cart</span>
+                                    </button>
+                                @endif
+                            </div>
                         </div>
                     </div>
-                </div>
+                @empty
+                    <div class="col-12">
+                        <div class="alert alert-info text-center">
+                            No products available.
+                        </div>
+                    </div>
+                @endforelse
+
+
 
             </div>
 
@@ -469,34 +628,159 @@
             </div>
             <hr>
             <div class="row pb-3 product_slide">
-                <div class="col-lg-3 col-md-6 col-sm-12 p-2 card_parent">
-                    <div class="product_card">
-                        <div class="product-badge">
-                            <span class="badge bg-danger text-white">-20%</span>
-                        </div>
-                        <div class="product-image">
-                            <a href="detail.html"><img src="{{ asset('frontend/assets/img/sofa 2.jpg') }}"
-                                    alt="Colorful Stylish Shirt"></a>
-                            <div class="product-actions">
-                                <button class="action-btn wishlist-btn">
-                                    <i class="far fa-heart"></i>
-                                </button>
+
+                @forelse ($featuredProducts as $product)
+                    <div class="col-lg-3 col-md-6 col-sm-12 p-2 card_parent">
+                        <div class="product_card">
+                            <div class="product-badge">
+                                @if ($product->discount_percentage > 0)
+                                    <span
+                                        class="badge bg-danger text-white ">{{ $product->discount_percentage }}%</span>
+                                @else
+                                    <span
+                                        class="badge bg-danger text-white d-none">{{ $product->discount_percentage }}%</span>
+                                @endif
                             </div>
-                        </div>
-                        <div class="product-info">
-                            <h6 class="product-title">Colorful Stylish
-                                Shirt</h6>
-                            <div class="product-price">
-                                <span class="current-price">৳ 98.40</span>
-                                <span class="old-price">৳ 123.00</span>
+                            <div class="product-image">
+                                <a href="{{ route('frontend.product-details', $product->slug) }}"><img
+                                        src="{{ Storage::url($product->productImage->first()->image_name) }}"
+                                        alt="Colorful Stylish Shirt"></a>
+                                <div class="product-actions">
+                                    @php
+                                        $isWishlisted = Auth::check()
+                                            ? Auth::user()->wishlists->contains('product_id', $product->id)
+                                            : false;
+                                    @endphp
+                                    <button type="button"
+                                        class="action-btn wishlist-btn {{ $isWishlisted ? 'wishlisted' : '' }}"
+                                        onclick="event.preventDefault(); toggleWishlist(this, {{ $product->id }})">
+                                        <i class="{{ $isWishlisted ? 'fas' : 'far' }} fa-heart"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <button class="add-to-cart-btn">
-                                <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>
-                                <span>Add to Cart</span>
-                            </button>
+                            <div class="product-info">
+                                <h6 class="product-title">{{ $product->name }}</h6>
+                                <div class="product-price">
+                                    <span class="current-price">৳ {{ $product->price }}</span>
+                                    @if ($product->discount_price > 0)
+                                        <span class="old-price">৳ {{ $product->discount_price }}</span>
+                                    @else
+                                        <span class="old-price d-none">৳ {{ $product->discount_price }}</span>
+                                    @endif
+                                </div>
+                                @if ($product->stock_status == 'out_of_stock')
+                                    <button class="add-to-cart-btn out_stock" style="cursor: not-allowed"
+                                        data-id="{{ $product->id }}" data-name="{{ $product->name }}"
+                                        data-price="{{ $product->discount_price ?? $product->price }}"
+                                        data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
+                                        data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
+                                        <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>
+                                        <span>Add to Cart</span>
+                                    </button>
+                                @else
+                                    <button class="add-to-cart-btn" style="cursor: pointer"
+                                        onclick="openProductPopup(this)" data-id="{{ $product->id }}"
+                                        data-name="{{ $product->name }}"
+                                        data-price="{{ $product->discount_price ?? $product->price }}"
+                                        data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
+                                        data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
+                                        <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>
+                                        <span>Add to Cart</span>
+                                    </button>
+                                @endif
+                            </div>
                         </div>
                     </div>
-                </div>
+                @empty
+                    <div class="col-12">
+                        <div class="alert alert-info text-center">
+                            No featured products available.
+                        </div>
+                @endforelse
+
+            </div>
+        </div>
+    </section>
+    <!-- Products End -->
+    <!-- Products Start -->
+    <section id="featured_product">
+
+        <div class="container pt-5">
+            <div class="title mb-2 d-flex justify-content-between align-items-center">
+                <h2 class>New Products </h2>
+                <a href>View All</a>
+            </div>
+            <hr>
+            <div class="row pb-3 product_slide">
+
+                @forelse ($newProducts as $product)
+                    <div class="col-lg-3 col-md-6 col-sm-12 p-2 card_parent">
+                        <div class="product_card">
+                            <div class="product-badge">
+                                @if ($product->discount_percentage > 0)
+                                    <span
+                                        class="badge bg-danger text-white ">{{ $product->discount_percentage }}%</span>
+                                @else
+                                    <span
+                                        class="badge bg-danger text-white d-none">{{ $product->discount_percentage }}%</span>
+                                @endif
+                            </div>
+                            <div class="product-image">
+                                <a href="{{ route('frontend.product-details', $product->slug) }}"><img
+                                        src="{{ Storage::url($product->productImage->first()->image_name) }}"
+                                        alt="Colorful Stylish Shirt"></a>
+                                <div class="product-actions">
+                                    @php
+                                        $isWishlisted = Auth::check()
+                                            ? Auth::user()->wishlists->contains('product_id', $product->id)
+                                            : false;
+                                    @endphp
+                                    <button type="button"
+                                        class="action-btn wishlist-btn {{ $isWishlisted ? 'wishlisted' : '' }}"
+                                        onclick="event.preventDefault(); toggleWishlist(this, {{ $product->id }})">
+                                        <i class="{{ $isWishlisted ? 'fas' : 'far' }} fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <h6 class="product-title">{{ $product->name }}</h6>
+                                <div class="product-price">
+                                    <span class="current-price">৳ {{ $product->price }}</span>
+                                    @if ($product->discount_price > 0)
+                                        <span class="old-price">৳ {{ $product->discount_price }}</span>
+                                    @else
+                                        <span class="old-price d-none">৳ {{ $product->discount_price }}</span>
+                                    @endif
+                                </div>
+                                @if ($product->stock_status == 'out_of_stock')
+                                    <button class="add-to-cart-btn out_stock" style="cursor: not-allowed"
+                                        data-id="{{ $product->id }}" data-name="{{ $product->name }}"
+                                        data-price="{{ $product->discount_price ?? $product->price }}"
+                                        data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
+                                        data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
+                                        <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>
+                                        <span>Add to Cart</span>
+                                    </button>
+                                @else
+                                    <button class="add-to-cart-btn" style="cursor: pointer"
+                                        onclick="openProductPopup(this)" data-id="{{ $product->id }}"
+                                        data-name="{{ $product->name }}"
+                                        data-price="{{ $product->discount_price ?? $product->price }}"
+                                        data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
+                                        data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
+                                        <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>
+                                        <span>Add to Cart</span>
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-12">
+                        <div class="alert alert-info text-center">
+                            No New products available.
+                        </div>
+                @endforelse
 
             </div>
         </div>
@@ -510,7 +794,7 @@
         <div class="container mt-5 pt-5">
             <div class="row pt-5">
                 <div class="col-lg-4 col-md-12 mb-5 pr-3 pr-xl-5">
-                    <a href="" class="text-decoration-none">
+                    <a href="{{ route('frontend.home') }}" class="text-decoration-none">
                         <h1 class="mb-4 display-5 font-weight-semi-bold">Nahar
                             Fashion</h1>
                     </a>
@@ -593,7 +877,7 @@
         </div>
     </footer>
     <!-- Footer End -->
-
+    <x-toast />
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
@@ -610,8 +894,10 @@
 
     <!-- Template Javascript -->
     <script src="{{ asset('frontend/assets/js/main.js') }}"></script>
+    <script src="{{ asset('frontend/assets/js/cartpopup.js') }}"></script>
     <script src="{{ asset('frontend/assets/js/side_bar.js') }}"></script>
     <script src="{{ asset('frontend/assets/js/slider.js') }}"></script>
+    <script src="{{ asset('frontend/assets/js/wishlist.js') }}"></script>
     <script src="https://code.iconify.design/iconify-icon/3.0.0/iconify-icon.min.js"></script>
 
     <!-- <script src="./assets/js/bootstrap.bundle.min.js"></script> -->

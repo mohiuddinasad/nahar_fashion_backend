@@ -1,9 +1,25 @@
+@php
+    $cart = session()->get('cart', []);
+    $qty = array_sum(array_column($cart, 'qty'));
+@endphp
+
+@php
+    $total_price = 0;
+@endphp
+
+@foreach ($cart as $id => $data)
+    @php
+        $total_price += $data['price'] * $data['qty'];
+    @endphp
+@endforeach
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="utf-8">
-    <title>Nahar Fashion</title>
+    <title>@yield('frontend_title')</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
@@ -28,6 +44,7 @@
     <link rel="stylesheet" href="{{ asset('frontend/assets/css/slick.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('frontend/assets/css/responsive.css') }}">
+    @stack('frontend_css')
 </head>
 
 <body>
@@ -53,13 +70,16 @@
                 </form>
             </div>
             <div class="col-lg-3 col-6 text-right">
-                <a href="wishlist.html" class="btn border">
+                @php
+                    $wishlistCount = Auth::check() ? Auth::user()->wishlists()->count() : 0;
+                @endphp
+                <a href="{{ route('frontend.wishlist') }}" class="btn border">
                     <i class="fas fa-heart text-primary"></i>
-                    <span class="badge">0</span>
+                    <span class="badge" id="wishlistCount">{{ $wishlistCount }}</span>
                 </a>
-                <a href class="btn border">
+                <a href="{{ route('frontend.cart') }}" class="btn border">
                     <i class="fas fa-shopping-cart text-primary"></i>
-                    <span class="badge">0</span>
+                    <span class="badge">{{ $qty ? $qty : 0 }}</span>
                 </a>
             </div>
         </div>
@@ -77,28 +97,31 @@
                 </a>
                 <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0 bg-light"
                     id="navbar-vertical" style="width: calc(100% - 30px); z-index: 999;">
-                    <div class="navbar-nav w-100 overflow-hidden" style="height: 410px">
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link" data-toggle="dropdown">Dresses <i
-                                    class="fa fa-angle-down float-right mt-1"></i></a>
-                            <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
-                                <a href class="dropdown-item">Men's
-                                    Dresses</a>
-                                <a href class="dropdown-item">Women's
-                                    Dresses</a>
-                                <a href class="dropdown-item">Baby's
-                                    Dresses</a>
-                            </div>
-                        </div>
-                        <a href class="nav-item nav-link">Shirts</a>
-                        <a href class="nav-item nav-link">Jeans</a>
-                        <a href class="nav-item nav-link">Swimwear</a>
-                        <a href class="nav-item nav-link">Sleepwear</a>
-                        <a href class="nav-item nav-link">Sportswear</a>
-                        <a href class="nav-item nav-link">Jumpsuits</a>
-                        <a href class="nav-item nav-link">Blazers</a>
-                        <a href class="nav-item nav-link">Jackets</a>
-                        <a href class="nav-item nav-link">Shoes</a>
+                    <div class="navbar-nav w-100">
+
+
+                        @forelse ($categories as $category)
+                            @if ($category->children->count() > 0)
+                                <div class="nav-item dropdown">
+                                    <a href="{{ route('frontend.category-wise-product', $category->slug) }}"
+                                        class="nav-link" data-toggle="dropdown"> {{ $category->name }} <i
+                                            class="fa fa-angle-down float-right mt-1"></i></a>
+                                    <div
+                                        class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
+                                        @foreach ($category->children as $child)
+                                            <a href="{{ route('frontend.category-wise-product', $child->slug) }}"
+                                                class="dropdown-item">{{ $child->name }}</a>
+                                        @endforeach
+
+                                    </div>
+                                </div>
+                            @else
+                                <a href="{{ route('frontend.category-wise-product', $category->slug) }}"
+                                    class="nav-item nav-link">{{ $category->name }}</a>
+                            @endif
+                        @empty
+                            <p class="text-center">No category found</p>
+                        @endforelse
                     </div>
                 </nav>
             </div>
@@ -245,19 +268,24 @@
                     </div>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
-                            <a href="index.html" class="nav-item nav-link">Home</a>
-                            <a href="shop.html" class="nav-item nav-link">Shop</a>
+                            <a href="{{ route('frontend.home') }}" class="nav-item nav-link">Home</a>
+                            <a href="{{ route('frontend.shop') }}" class="nav-item nav-link">Shop</a>
                             <a href="shop.html" class="nav-item nav-link">Wholesale</a>
-                            <a href="contact.html" class="nav-item nav-link">Contact</a>
+                            <a href="{{ route('frontend.contact') }}" class="nav-item nav-link">Contact</a>
                             <a href="contact.html" class="nav-item nav-link">Track Order</a>
                         </div>
                         <div class="navbar-nav ml-auto py-0">
                             @auth
-                            <a href="{{ route('dashboard') }}" class="nav-item nav-link">Profile</a>
-                            <a href="{{ route('logout') }}" class="nav-item nav-link">Logout</a>
+                                <a href="{{ route('dashboard') }}" class="nav-item nav-link">Profile</a>
+                                <form action="{{ route('logout') }}" method="post">
+                                    @csrf
+                                    <button type="submit" class="nav-item nav-link btn btn-link" style="display:inline-flex;align-items:center; ">
+                                        <span>Logout</span>
+                                    </button>
+                                </form>
                             @else
-                            <a href="{{ route('login') }}" class="nav-item nav-link">Login</a>
-                            <a href="{{ route('register') }}" class="nav-item nav-link">Register</a>
+                                <a href="{{ route('login') }}" class="nav-item nav-link">Login</a>
+                                <a href="{{ route('register') }}" class="nav-item nav-link">Register</a>
                             @endauth
                         </div>
                     </div>
@@ -266,6 +294,92 @@
         </div>
     </div>
     <!-- Navbar End -->
+    <!-- ========== Start cart popup ========== -->
+
+    <!-- Overlay -->
+
+    <section>
+
+
+        <div id="cartPopupOverlay" onclick="closePopup()">
+
+        </div>
+
+        <div id="cartPopup">
+
+            <!-- Left: Image Panel -->
+            <div class="cp-left">
+                <div class="cp-img-wrap">
+                    <img id="popupImage" src="https://via.placeholder.com/300x350" alt="Product">
+                    <div class="cp-img-shine"></div>
+                </div>
+
+                <!-- Floating decorative circles -->
+                <div class="cp-circle cp-circle-1"></div>
+                <div class="cp-circle cp-circle-2"></div>
+                <div class="cp-circle cp-circle-3"></div>
+            </div>
+
+            <!-- Right: Info Panel -->
+            <div class="cp-right">
+
+                <!-- Close -->
+                <a class="cp-close" onclick="closePopup()">
+                    <iconify-icon icon="mingcute:close-fill" width="18" height="18"></iconify-icon>
+                </a>
+
+                <!-- Animated content blocks -->
+                <div class="cp-anim-block" style="--delay: 0.05s">
+                    <div class="cp-category">✦ New Arrival</div>
+                    <h3 class="cp-name" id="popupName">Product Name</h3>
+                </div>
+
+                <div class="cp-anim-block" style="--delay: 0.1s">
+                    <div class="cp-price-row">
+                        <span class="cp-price" id="popupPrice">৳ 0.00</span>
+                        <span class="cp-badge">In Stock</span>
+                    </div>
+                </div>
+
+                <div class="cp-divider cp-anim-block" style="--delay: 0.15s"></div>
+
+                <!-- Variants -->
+                <div id="popupVariantSection" class="cp-anim-block" style="--delay: 0.2s">
+                    <p class="cp-label">Select Variant</p>
+                    <div id="popupVariants" class="cp-variants"></div>
+                </div>
+
+                <!-- Quantity -->
+                <div class="cp-qty-wrap cp-anim-block" style="--delay: 0.25s">
+                    <p class="cp-label">Quantity</p>
+                    <div class="cp-qty">
+                        <button id="popupQtyMinus" onclick="popupQtyChange(-1)" class="cp-qty-btn">−</button>
+                        <input type="number" id="popupQty" value="1" min="1" class="cp-qty-input">
+                        <button id="popupQtyPlus" onclick="popupQtyChange(1)" class="cp-qty-btn">+</button>
+                    </div>
+                </div>
+
+                <!-- Add to Cart Button -->
+                <a id="popupAddToCartLink" href="#" class="cp-add-btn cp-anim-block" style="--delay: 0.3s">
+                    <span>Add to Cart</span>
+                    <svg class="cp-btn-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                    <div class="cp-ripple"></div>
+                </a>
+
+
+
+            </div>
+        </div>
+
+        <input type="hidden" id="popupProductId" value="">
+        <input type="hidden" id="popupVariantId" value="">
+    </section>
+
+    <!-- ========== End cart popup ========== -->
 
     @yield(section: 'frontend_content')
     <!-- Footer Start -->
@@ -358,12 +472,14 @@
         </div>
     </footer>
     <!-- Footer End -->
-
+    <x-toast />
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('frontend/lib/easing/easing.min.js') }}"></script>
     <script src="{{ asset('frontend/lib/owlcarousel/owl.carousel.min.js') }}"></script>
+    <script src="{{ asset('frontend/assets/mail/jqBootstrapValidation.min.js') }}"></script>
+    <script src="{{ asset('frontend/assets/mail/contact.js') }}"></script>
 
     <!-- jquery js  -->
     <script src="{{ asset('frontend/assets/js/jquery-3.7.1.min.js') }}"></script>
@@ -375,11 +491,80 @@
 
     <!-- Template Javascript -->
     <script src="{{ asset('frontend/assets/js/main.js') }}"></script>
+    <script src="{{ asset('frontend/assets/js/cartpopup.js') }}"></script>
     <script src="{{ asset('frontend/assets/js/side_bar.js') }}"></script>
     <script src="{{ asset('frontend/assets/js/slider.js') }}"></script>
     <script src="https://code.iconify.design/iconify-icon/3.0.0/iconify-icon.min.js"></script>
 
+    <script>
+        function toggleWishlist(btn, productId) {
+            const isWishlisted = btn.classList.contains('wishlisted');
+            const url = isWishlisted ? `/wishlist/remove/${productId}` : `/wishlist/add/${productId}`;
+            const method = isWishlisted ? 'DELETE' : 'POST';
+            const token = document.querySelector('meta[name="csrf-token"]');
+            if (!token) {
+                console.error('CSRF token missing!');
+                return;
+            }
+
+            fetch(url, {
+                    method: method,
+                    headers: {
+                        'X-CSRF-TOKEN': token.content,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'login_required') {
+                        window.location.href = '/login';
+                        return;
+                    }
+
+                    if (data.status === 'added' || data.status === 'already_added') {
+                        btn.classList.add('wishlisted');
+                        if (btn.querySelector('i')) {
+                            btn.querySelector('i').className = 'fas fa-heart';
+                        }
+                    }
+
+                    if (data.status === 'removed') {
+                        const card = document.getElementById(`wishlist-card-${productId}`);
+                        if (card) {
+                            card.style.transition = 'opacity 0.3s';
+                            card.style.opacity = '0';
+                            setTimeout(() => {
+                                card.remove();
+
+                                // Check if any rows left
+                                const tbody = document.querySelector('#wishlist_product tbody');
+                                if (tbody && tbody.querySelectorAll('tr').length === 0) {
+                                    document.querySelector('#wishlist_product .container').innerHTML = `
+                            <div class="alert alert-info text-center my-5">
+                                Your wishlist is empty. <a href="/shop">Continue Shopping</a>
+                            </div>`;
+                                }
+                            }, 300);
+                        } else {
+                            btn.classList.remove('wishlisted');
+                            if (btn.querySelector('i')) {
+                                btn.querySelector('i').className = 'far fa-heart';
+                            }
+                        }
+                    }
+
+                    if (data.count !== undefined) {
+                        const badge = document.getElementById('wishlistCount');
+                        if (badge) badge.textContent = data.count;
+                    }
+                })
+                .catch(err => console.error('Wishlist error:', err));
+        }
+    </script>
+
     <!-- <script src="./assets/js/bootstrap.bundle.min.js"></script> -->
+    @stack('frontend_js')
 </body>
 
 </html>

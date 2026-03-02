@@ -97,6 +97,27 @@
                                     href="{{ route('dashboard.products.product-list') }}">Product List</a></li>
 
                         </ul>
+
+                    </li>
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link"><span class="pc-micon"><iconify-icon
+                                    icon="ph:flag-banner-fold-duotone" width="24" height="24"></iconify-icon>
+                            </span><span class="pc-mtext">Banners</span><span class="pc-arrow"><i
+                                    data-feather="chevron-right"></i></span></a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item"><a class="pc-link"
+                                    href="{{ route('dashboard.banners.top.banner-list') }}">Top Banner</a></li>
+                            <li class="pc-item"><a class="pc-link"
+                                    href="{{ route('dashboard.banners.bottom.banner-list') }}">Bottom Banner</a></li>
+
+
+
+
+                        </ul>
+                    </li>
+
+                    <li class="pc-item">
+                        <a href="{{ route('dashboard.orders.order-list') }}" class="pc-link"><span class="pc-micon"><iconify-icon icon="lets-icons:order" width="24" height="24"></iconify-icon></span><span class="pc-mtext">Orders</span></a>
                     </li>
 
 
@@ -109,7 +130,7 @@
     <!-- [ Header Topbar ] start -->
     <header class="pc-header" style="background: #D19C97">
         <div class="m-header">
-            <a href="" class="b-brand text-primary">
+            <a href="{{ route('frontend.home') }}" class="b-brand text-primary">
                 <!-- ========   Change your logo from here   ============ -->
                 <h3>Nahar Fashion</h3>
             </a>
@@ -132,7 +153,13 @@
                 </ul>
             </div>
             <!-- [Mobile Media Block end] -->
-            <div class="ms-auto">
+            <div class="ms-auto d-flex align-items-center">
+                <div class="message">
+                    <a href="{{ route('dashboard.contact-list') }}"
+                        class="d-flex align-items-center text-decoration-none justify-content-center text-dark">
+                        <iconify-icon icon="lets-icons:message-fill" width="28" height="28"></iconify-icon>
+                    </a>
+                </div>
                 <ul class="list-unstyled">
                     <li class="dropdown pc-h-item header-user-profile">
                         <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown"

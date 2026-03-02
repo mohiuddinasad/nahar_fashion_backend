@@ -69,8 +69,9 @@ class CategoryController extends Controller
         $parentCategories = Category::whereNull('category_id')
             ->where('id', '!=', $category->id)
             ->get();
+        $categories = Category::all();
 
-        return view('backend.categories.edit', compact('category', 'parentCategories'));
+        return view('backend.categories.edit', compact('category', 'parentCategories', 'categories'));
     }
 
     public function update(CategoryRequest $request, Category $category)
