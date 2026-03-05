@@ -41,8 +41,8 @@
 
     <section id="checkout">
         <div class="container pt-5">
-            <form action>
-
+            <form action="{{ route('frontend.checkout.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
                 <div class="row">
                     <div class="col-lg-8">
                         <div class="mb-4">
@@ -135,7 +135,7 @@
                                         </div>
                                         <div class="col-lg-10">
                                             <textarea style="height: 120px;" name="comments" id="comments" class="form-control"
-                                                placeholder="Enter Your Comments" required></textarea>
+                                                placeholder="Enter Your Comments" ></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -230,9 +230,8 @@
                                     </div>
 
                                     <div class="uplode">
-                                        <h6 class="text-dark my-3">Sofa/Chair
-                                            Photo Upload (optional)</h6>
-                                        <input type="file" class="my-pond" name="filepond" multiple
+                                        <h6 class="text-dark my-3">Upload your furniture (optional)</h6>
+                                        <input type="file" class="my-pond" name="images[]" multiple
                                             data-max-file-size="3MB">
                                     </div>
                                 </div>

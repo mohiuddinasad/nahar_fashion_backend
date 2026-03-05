@@ -23,6 +23,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
+    @yield('meta')
 
     <!-- Favicon -->
     <link href="./assets/img/favicon.ico" rel="icon">
@@ -272,7 +273,7 @@
                             <a href="{{ route('frontend.shop') }}" class="nav-item nav-link">Shop</a>
                             <a href="shop.html" class="nav-item nav-link">Wholesale</a>
                             <a href="{{ route('frontend.contact') }}" class="nav-item nav-link">Contact</a>
-                            <a href="contact.html" class="nav-item nav-link">Track Order</a>
+                            <a href="{{ route('frontend.track-order') }}" class="nav-item nav-link">Track Order</a>
                         </div>
                         <div class="navbar-nav ml-auto py-0">
                             @auth

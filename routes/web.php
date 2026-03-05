@@ -9,7 +9,9 @@ use App\Http\Controllers\Backend\Products\ProductController;
 use App\Http\Controllers\Backend\RolePermission\RolePermissionController;
 use App\Http\Controllers\Frontend\Cart\CartController;
 use App\Http\Controllers\Frontend\HomePageController;
+use App\Http\Controllers\Frontend\OrderTracking\OrderTrackingController;
 use App\Http\Controllers\Frontend\ProductDetails\ProductDetailsController;
+use App\Http\Controllers\Frontend\Review\ReviewController;
 use App\Http\Controllers\Frontend\Shop\ShopController;
 use App\Http\Controllers\Frontend\Wishlist\WishlistController;
 use App\Http\Controllers\ProfileController;
@@ -99,6 +101,10 @@ Route::prefix('dashboard/')->name('dashboard.')->middleware(['role:super_admin|a
     // ─── orders Routes ─────────────────────────────────────────────────
     Route::prefix('orders')->name('orders.')->middleware(['role:super_admin|admin|manager'])->group(function () {
         Route::get('/order-list', [OrderController::class, 'index'])->name('order-list');
+        Route::get('/order-show/{order}', [OrderController::class, 'show'])->name('order-show');
+        Route::put('/order-status/{order}', [OrderController::class, 'updateStatus'])->name('order-status');
+        Route::put('/payment-status/{order}', [OrderController::class, 'updatePaymentStatus'])->name('payment-status');
+        Route::delete('/order-delete/{order}', [OrderController::class, 'destroy'])->name('order-delete');
     });
 
 });
@@ -107,7 +113,8 @@ Route::prefix('dashboard/')->name('dashboard.')->middleware(['role:super_admin|a
 Route::prefix('/')->name('frontend.')->group(function () {
     Route::get('/', [HomePageController::class, 'index'])->name('home');
     Route::get('/product_details/{slug}', [ProductDetailsController::class, 'productDetails'])->name('product-details');
-    Route::post('/', [HomePageController::class, 'orderStoret'])->name('home');
+    Route::post('/checkout', [HomePageController::class, 'store'])->name('checkout.store');
+    Route::get('/order-success/{orderNumber}', [HomePageController::class, 'success'])->name('order.success');
 
     // cart routes
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
@@ -134,6 +141,18 @@ Route::prefix('/')->name('frontend.')->group(function () {
         return view('frontend.checkout');
     })->name('checkout');
 
+    // order tracking routes--------------------------------------------------
+    Route::get('/track-order', [OrderTrackingController::class, 'index'])->name('track-order');
+    Route::post('/track-order', [OrderTrackingController::class, 'track'])->name('track-order.track');
+
+    // revie routes --------------------------------------------------
+
+    Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+
+    // product search route ------------------------------------------------
+    
+
+    
 });
 
 require __DIR__.'/auth.php';

@@ -123,7 +123,7 @@
                                         <img src="{{ Storage::url($product->productImage->first()->image_name) }}"
                                             alt="{{ $product->name }}">
                                     </a>
-                                    <div class="product-actions">
+                                    <div class="product-actions"> 
                                         @php
                                             $isWishlisted = Auth::check()
                                                 ? Auth::user()->wishlists->contains('product_id', $product->id)

@@ -2,6 +2,9 @@
 
 namespace App\Models\Backend\Products;
 
+use App\Models\Backend\Products\Category;
+use App\Models\Backend\Products\ProductImage;
+use App\Models\Frontend\Review;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
@@ -37,5 +40,10 @@ class Product extends Model
     public function productVariant()
     {
         return $this->hasMany(ProductVariant::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 }
