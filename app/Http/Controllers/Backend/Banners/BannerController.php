@@ -89,7 +89,7 @@ class BannerController extends Controller
             if (file_exists(public_path($banner->top_image))) {
                 unlink(public_path($banner->top_image));
             }
-
+ 
             $image = $request->file('top_image');
             $imageName = time().'_'.$image->getClientOriginalName();
 

@@ -126,7 +126,7 @@
             </div>
         </div>
 
-        <div class="mt-3">{{ $orders->links() }}</div>
+        <div class="mt-3">{{ $orders->links('pagination::bootstrap-5') }}</div>
     </div>
 
     <script>

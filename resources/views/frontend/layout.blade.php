@@ -59,15 +59,27 @@
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
-                <form action>
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for products">
+                <form method="GET" action="{{ request()->url() }}"
+                    class="d-flex align-items-center justify-content-between">
+                    @if (request('price'))
+                        <input type="hidden" name="price" value="{{ request('price') }}">
+                    @endif
+
+                    <div class="input-group position-relative">
+                        <input type="text" class="form-control" name="search" id="liveSearchInput"
+                            placeholder="Search by name" value="{{ request('search') }}" autocomplete="off">
                         <div class="input-group-append">
-                            <span class="input-group-text bg-transparent text-primary">
+                            <button type="submit" class="input-group-text bg-transparent text-primary">
                                 <i class="fa fa-search"></i>
-                            </span>
+                            </button>
+                        </div>
+
+                        <div id="liveSearchResults" class="list-group shadow"
+                            style="display:none; position:absolute; top:100%; left:0; right:0; z-index:9999; max-height:400px; overflow-y:auto;">
                         </div>
                     </div>
+
+
                 </form>
             </div>
             <div class="col-lg-3 col-6 text-right">
@@ -280,7 +292,8 @@
                                 <a href="{{ route('dashboard') }}" class="nav-item nav-link">Profile</a>
                                 <form action="{{ route('logout') }}" method="post">
                                     @csrf
-                                    <button type="submit" class="nav-item nav-link btn btn-link" style="display:inline-flex;align-items:center; ">
+                                    <button type="submit" class="nav-item nav-link btn btn-link"
+                                        style="display:inline-flex;align-items:center; ">
                                         <span>Logout</span>
                                     </button>
                                 </form>
@@ -442,15 +455,15 @@
                                 Us</h5>
                             <div class="mb-3 address">
                                 <p class="mb-0">Address</p>
-                                <span>1 kilometer , Chittagong</span>
+                                <span>{{ $globalSetting->contact_address }}</span>
                             </div>
                             <div class="mb-3 address">
                                 <p class="mb-0">Phone</p>
-                                <span>+880 123456789</span>
+                                <span>{{ $globalSetting->contact_phone }}</span>
                             </div>
                             <div class="mb-3 address">
                                 <p class="mb-0">Email</p>
-                                <span>info@naharfashion.com</span>
+                                <span>{{ $globalSetting->contact_email }}</span>
                             </div>
 
                         </div>
@@ -563,7 +576,69 @@
                 .catch(err => console.error('Wishlist error:', err));
         }
     </script>
+    <script>
+        const liveSearchInput = document.getElementById('liveSearchInput');
+        const liveSearchResults = document.getElementById('liveSearchResults');
+        let searchTimeout = null;
 
+        liveSearchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            clearTimeout(searchTimeout);
+
+            if (query.length < 2) {
+                liveSearchResults.style.display = 'none';
+                liveSearchResults.innerHTML = '';
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                fetch(`{{ route('frontend.shop.live-search') }}?search=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(products => {
+                        liveSearchResults.innerHTML = '';
+
+                        if (products.length === 0) {
+                            liveSearchResults.innerHTML = `
+                                <div class="list-group-item text-muted text-center py-3">
+                                    No products found
+                                </div>`;
+                            liveSearchResults.style.display = 'block';
+                            return;
+                        }
+
+                        products.forEach(product => {
+                            liveSearchResults.innerHTML += `
+                                <a href="/product_details/${product.slug}"
+                                    class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-2">
+                                    <img src="${product.image}" alt="${product.name}"
+                                        style="width:48px; height:48px; object-fit:cover; border-radius:6px; flex-shrink:0;margin-right: 10px;">
+                                    <div>
+                                        <div class="font-weight-semibold" style="font-size:14px;">${product.name}</div>
+                                        <div class="text-primary" style="font-size:13px;">৳${product.price}</div>
+                                    </div>
+                                </a>`;
+                        });
+
+                        liveSearchResults.style.display = 'block';
+                    })
+                    .catch(() => {
+                        liveSearchResults.style.display = 'none';
+                    });
+            }, 100);
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!liveSearchInput.contains(e.target) && !liveSearchResults.contains(e.target)) {
+                liveSearchResults.style.display = 'none';
+            }
+        });
+
+        liveSearchInput.addEventListener('focus', function() {
+            if (this.value.trim().length >= 2 && liveSearchResults.innerHTML !== '') {
+                liveSearchResults.style.display = 'block';
+            }
+        });
+    </script>
     <!-- <script src="./assets/js/bootstrap.bundle.min.js"></script> -->
     @stack('frontend_js')
 </body>

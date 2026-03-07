@@ -18,7 +18,7 @@
 <head>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="utf-8">
-    <title>Nahar Fashion</title>
+    <title>{{ $globalSetting->site_name ?? 'Nahar Fashion' }}</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
@@ -56,15 +56,27 @@
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
-                <form action>
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for products">
+                <form method="GET" action="{{ request()->url() }}"
+                    class="d-flex align-items-center justify-content-between">
+                    @if (request('price'))
+                        <input type="hidden" name="price" value="{{ request('price') }}">
+                    @endif
+
+                    <div class="input-group position-relative">
+                        <input type="text" class="form-control" name="search" id="liveSearchInput"
+                            placeholder="Search by name" value="{{ request('search') }}" autocomplete="off">
                         <div class="input-group-append">
-                            <span class="input-group-text bg-transparent text-primary">
+                            <button type="submit" class="input-group-text bg-transparent text-primary">
                                 <i class="fa fa-search"></i>
-                            </span>
+                            </button>
+                        </div>
+
+                        <div id="liveSearchResults" class="list-group shadow"
+                            style="display:none; position:absolute; top:100%; left:0; right:0; z-index:9999; max-height:400px; overflow-y:auto;">
                         </div>
                     </div>
+
+
                 </form>
             </div>
             <div class="col-lg-3 col-6 text-right">
@@ -377,32 +389,35 @@
 
     <!-- ========== Start banner ========== -->
     <div class="container">
-
         <div class="row justify-content-end">
             <div class="col-lg-9">
                 <div id="header-carousel" class="carousel slide" data-ride="carousel">
+
                     <div class="carousel-inner">
-                        <div class="carousel-item active" style="height: 410px;">
-                            <img class="img-fluid"
-                                src="{{ asset('frontend/assets/img/BzfY8SHVoWo5h8wxCdJ45vlF1tGw1NVSI5ej5gGa.webp') }}"
-                                alt="Image">
 
-                        </div>
-                        <div class="carousel-item" style="height: 410px;">
-                            <img class="img-fluid" src="{{ asset('frontend/assets/img/2.webp') }}" alt="Image">
+                        @foreach ($topBanners as $key => $banner)
+                            <div class="carousel-item {{ $key == 0 ? 'active' : '' }}" style="height: 410px;">
+                                <a href="{{ $banner->category ? route('frontend.category-wise-product', $banner->category->slug) : '#' }}">
 
-                        </div>
+                                    <img class="img-fluid" src="{{ asset($banner->top_image) }}" alt="Banner Image">
+                                </a>
+                            </div>
+                        @endforeach
+
                     </div>
+
                     <a class="carousel-control-prev" href="#header-carousel" data-slide="prev">
                         <div class="btn btn-dark" style="width: 45px; height: 45px;">
                             <span class="carousel-control-prev-icon mb-n2"></span>
                         </div>
                     </a>
+
                     <a class="carousel-control-next" href="#header-carousel" data-slide="next">
                         <div class="btn btn-dark" style="width: 45px; height: 45px;">
                             <span class="carousel-control-next-icon mb-n2"></span>
                         </div>
                     </a>
+
                 </div>
             </div>
         </div>
@@ -503,30 +518,19 @@
     <section id="banner_2">
         <div class="container">
             <div class="row">
+
+                @foreach ($bottomBanners as $banner)
+                    
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <div class="image">
-                        <a href>
-                            <img src="{{ asset('frontend/assets/img/banner 1.webp') }}" alt="2nd Banner Image"
+                        <a href="{{ $banner->category ? route('frontend.category-wise-product', $banner->category->slug) : '#' }}">
+                            <img src="{{ asset($banner->bottom_image) }}" alt="2nd Banner Image"
                                 class="img-fluid">
                         </a>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="image">
-                        <a href>
-                            <img src="{{ asset('frontend/assets/img/banner 2.webp') }}" alt="2nd Banner Image"
-                                class="img-fluid">
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="image">
-                        <a href>
-                            <img src="{{ asset('frontend/assets/img/banner 3.webp') }}" alt="2nd Banner Image"
-                                class="img-fluid">
-                        </a>
-                    </div>
-                </div>
+                @endforeach
+               
 
             </div>
         </div>
@@ -675,7 +679,7 @@
                                         data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
                                         data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
                                         <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>
-                                        <span>Add to Cart</span>
+                                        <span>Out of Stock</span>
                                     </button>
                                 @else
                                     <button class="add-to-cart-btn" style="cursor: pointer"
@@ -759,7 +763,7 @@
                                         data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
                                         data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
                                         <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>
-                                        <span>Add to Cart</span>
+                                        <span>Out of Stock</span>
                                     </button>
                                 @else
                                     <button class="add-to-cart-btn" style="cursor: pointer"
@@ -899,7 +903,69 @@
     <script src="{{ asset('frontend/assets/js/slider.js') }}"></script>
     <script src="{{ asset('frontend/assets/js/wishlist.js') }}"></script>
     <script src="https://code.iconify.design/iconify-icon/3.0.0/iconify-icon.min.js"></script>
+    <script>
+        const liveSearchInput = document.getElementById('liveSearchInput');
+        const liveSearchResults = document.getElementById('liveSearchResults');
+        let searchTimeout = null;
 
+        liveSearchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            clearTimeout(searchTimeout);
+
+            if (query.length < 2) {
+                liveSearchResults.style.display = 'none';
+                liveSearchResults.innerHTML = '';
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                fetch(`{{ route('frontend.shop.live-search') }}?search=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(products => {
+                        liveSearchResults.innerHTML = '';
+
+                        if (products.length === 0) {
+                            liveSearchResults.innerHTML = `
+                                <div class="list-group-item text-muted text-center py-3">
+                                    No products found
+                                </div>`;
+                            liveSearchResults.style.display = 'block';
+                            return;
+                        }
+
+                        products.forEach(product => {
+                            liveSearchResults.innerHTML += `
+                                <a href="/product_details/${product.slug}"
+                                    class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-2">
+                                    <img src="${product.image}" alt="${product.name}"
+                                        style="width:48px; height:48px; object-fit:cover; border-radius:6px; flex-shrink:0; margin-right: 10px;">
+                                    <div>
+                                        <div class="font-weight-semibold" style="font-size:14px;">${product.name}</div>
+                                        <div class="text-primary" style="font-size:13px;">৳${product.price}</div>
+                                    </div>
+                                </a>`;
+                        });
+
+                        liveSearchResults.style.display = 'block';
+                    })
+                    .catch(() => {
+                        liveSearchResults.style.display = 'none';
+                    });
+            }, 100);
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!liveSearchInput.contains(e.target) && !liveSearchResults.contains(e.target)) {
+                liveSearchResults.style.display = 'none';
+            }
+        });
+
+        liveSearchInput.addEventListener('focus', function() {
+            if (this.value.trim().length >= 2 && liveSearchResults.innerHTML !== '') {
+                liveSearchResults.style.display = 'block';
+            }
+        });
+    </script>
     <!-- <script src="./assets/js/bootstrap.bundle.min.js"></script> -->
 </body>
 

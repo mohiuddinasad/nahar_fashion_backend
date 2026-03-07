@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Backend\Banners\BottomBanner;
+use App\Models\Backend\Banners\TopBanner;
 use App\Models\Backend\Orders\Order;
 use App\Models\Backend\Orders\OrderImage;
 use App\Models\Backend\Orders\OrderItem;
@@ -27,8 +29,9 @@ class HomePageController extends Controller
         if (Auth::check()) {
             Auth::user()->load('wishlists');
         }
-
-        return view('welcome', compact('products', 'categories', 'featuredProducts', 'newProducts', 'wishlistCount'));
+        $topBanners = TopBanner::with('category')->get();
+        $bottomBanners = BottomBanner::with('category')->get();
+        return view('welcome', compact('products', 'categories', 'featuredProducts', 'newProducts', 'wishlistCount', 'topBanners', 'bottomBanners'));
     }
 
     public function store(Request $request)
@@ -119,5 +122,5 @@ class HomePageController extends Controller
         return view('frontend.orderSuccess', compact('order'));
     }
 
-    
+
 }

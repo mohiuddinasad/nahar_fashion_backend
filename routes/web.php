@@ -2,11 +2,14 @@
 
 use App\Http\Controllers\Backend\Banners\BannerController;
 use App\Http\Controllers\Backend\Contact\ContactController;
+use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\Order\OrderController;
 use App\Http\Controllers\Backend\Pofile\MyProfileController;
 use App\Http\Controllers\Backend\Products\CategoryController;
 use App\Http\Controllers\Backend\Products\ProductController;
 use App\Http\Controllers\Backend\RolePermission\RolePermissionController;
+use App\Http\Controllers\Backend\Sales\DailySaleController;
+use App\Http\Controllers\Backend\Setting\WebsiteSettingController;
 use App\Http\Controllers\Frontend\Cart\CartController;
 use App\Http\Controllers\Frontend\HomePageController;
 use App\Http\Controllers\Frontend\OrderTracking\OrderTrackingController;
@@ -17,9 +20,6 @@ use App\Http\Controllers\Frontend\Wishlist\WishlistController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['role:super_admin|admin|manager'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -28,30 +28,28 @@ Route::middleware('auth')->group(function () {
 
 });
 // backend routes
-
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['role:super_admin|admin|manager'])->name('dashboard');
 Route::prefix('dashboard/')->name('dashboard.')->middleware(['role:super_admin|admin|manager'])->group(function () {
     Route::get('/profile', [MyProfileController::class, 'index'])->name('profile');
     Route::post('/profile-update', [MyProfileController::class, 'update'])->name('profile.update');
     Route::post('/password-update', [MyProfileController::class, 'updatePassword'])->name('password.update');
     Route::get('/profile-delete', [MyProfileController::class, 'delete'])->name('profile.delete');
-
-    Route::prefix('users')->name('users.')->middleware(['role:super_admin|admin'])->group(function () {
-        Route::get('/user-list', [RolePermissionController::class, 'userList'])->name('user-list');
-        Route::put('/user-update/{id}', [RolePermissionController::class, 'userUpdate'])->name('user-update');
-        Route::post('/{id}/grant-wholesale', [RolePermissionController::class, 'grantWholesale'])->name('grant-wholesale');
-        Route::post('/{id}/revoke-wholesale', [RolePermissionController::class, 'revokeWholesale'])->name('revoke-wholesale');
-        Route::get('/user-delete/{id}', [RolePermissionController::class, 'userDelete'])->name('user-delete');
+    // user list
+    Route::prefix('users')->name('users.')->middleware(['role:super_admin|admin|manager'])->group(function () {
+        Route::get('/user-list', [RolePermissionController::class, 'userList'])->name('user-list')->middleware('permission:users.view');
+        Route::put('/user-update/{id}', [RolePermissionController::class, 'userUpdate'])->name('user-update')->middleware('permission:users.edit');
+        Route::post('/{id}/grant-wholesale', [RolePermissionController::class, 'grantWholesale'])->name('grant-wholesale')->middleware('permission:users.view');
+        Route::post('/{id}/revoke-wholesale', [RolePermissionController::class, 'revokeWholesale'])->name('revoke-wholesale')->middleware('permission:users.view');
+        Route::get('/user-delete/{id}', [RolePermissionController::class, 'userDelete'])->name('user-delete')->middleware('permission:users.delete');
     });
 
-    Route::prefix('role-permission')->name('role-permission.')->middleware(['permission:roles.create|roles.edit|roles.delete|roles.view|
-            permissions.assign|permissions.view|
-            users.create|users.edit|users.delete|users.view|users.assign-role'])->group(function () {
-        Route::get('/role-list', [RolePermissionController::class, 'roleList'])->name('role-list');
-        Route::get('/role-create', [RolePermissionController::class, 'roleCreate'])->name('role-create');
-        Route::post('/role-store', [RolePermissionController::class, 'roleStore'])->name('role-store');
-        Route::get('/role-edit/{id}', [RolePermissionController::class, 'roleEdit'])->name('role-edit');
-        Route::put('/role-update/{id}', [RolePermissionController::class, 'roleUpdate'])->name('role-update');
-        Route::delete('/role-delete/{id}', [RolePermissionController::class, 'roleDelete'])->name('role-delete');
+    Route::prefix('role-permission')->name('role-permission.')->middleware(['role:super_admin|admin|manager'])->group(function () {
+        Route::get('/role-list', [RolePermissionController::class, 'roleList'])->name('role-list')->middleware('permission:roles.view');
+        Route::get('/role-create', [RolePermissionController::class, 'roleCreate'])->name('role-create')->middleware('permission:roles.create');
+        Route::post('/role-store', [RolePermissionController::class, 'roleStore'])->name('role-store')->middleware('permission:roles.create');
+        Route::get('/role-edit/{id}', [RolePermissionController::class, 'roleEdit'])->name('role-edit')->middleware('permission:roles.edit');
+        Route::put('/role-update/{id}', [RolePermissionController::class, 'roleUpdate'])->name('role-update')->middleware('permission:roles.edit');
+        Route::delete('/role-delete/{id}', [RolePermissionController::class, 'roleDelete'])->name('role-delete')->middleware('permission:roles.delete');
     });
 
     Route::prefix('categories')->name('categories.')->middleware(['role:super_admin|admin|manager'])->group(function () {
@@ -107,6 +105,22 @@ Route::prefix('dashboard/')->name('dashboard.')->middleware(['role:super_admin|a
         Route::delete('/order-delete/{order}', [OrderController::class, 'destroy'])->name('order-delete');
     });
 
+    // ─── Daily Sales ──────────────────────────────────────────────
+    Route::prefix('daily-sales')->name('daily-sales.')->middleware(['role:super_admin|admin|manager'])->group(function () {
+        Route::get('/index', [DailySaleController::class, 'index'])->name('index');
+        Route::get('/create', [DailySaleController::class, 'create'])->name('create');
+        Route::post('/store', [DailySaleController::class, 'store'])->name('store');
+        Route::get('/edit/{dailySale}', [DailySaleController::class, 'edit'])->name('edit')->middleware('role:super_admin|admin');
+        Route::put('/update/{dailySale}', [DailySaleController::class, 'update'])->name('update')->middleware('role:super_admin|admin');
+        Route::delete('/delete/{dailySale}', [DailySaleController::class, 'destroy'])->name('destroy')->middleware('role:super_admin|admin');
+    });
+
+    // ─── Website Settings ──────────────────────────────────────
+    Route::prefix('settings')->name('settings.')->middleware('role:super_admin|admin')->group(function () {
+        Route::get('/', [WebsiteSettingController::class, 'index'])->name('index');
+        Route::put('/update', [WebsiteSettingController::class, 'update'])->name('update');
+    });
+
 });
 
 // frontend routes
@@ -150,9 +164,7 @@ Route::prefix('/')->name('frontend.')->group(function () {
     Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 
     // product search route ------------------------------------------------
-    
 
-    
 });
 
 require __DIR__.'/auth.php';

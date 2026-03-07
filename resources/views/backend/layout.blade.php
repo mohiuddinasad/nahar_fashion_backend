@@ -117,7 +117,21 @@
                     </li>
 
                     <li class="pc-item">
-                        <a href="{{ route('dashboard.orders.order-list') }}" class="pc-link"><span class="pc-micon"><iconify-icon icon="lets-icons:order" width="24" height="24"></iconify-icon></span><span class="pc-mtext">Orders</span></a>
+                        <a href="{{ route('dashboard.orders.order-list') }}" class="pc-link"><span
+                                class="pc-micon"><iconify-icon icon="lets-icons:order" width="24"
+                                    height="24"></iconify-icon></span><span class="pc-mtext">Orders</span></a>
+                    </li>
+                    <li class="pc-item">
+                        <a href="{{ route('dashboard.daily-sales.index') }}" class="pc-link"><span
+                                class="pc-micon"><iconify-icon icon="icon-park-twotone:sales-report" width="24" height="24"></iconify-icon></span><span class="pc-mtext">Sales</span></a>
+                    </li>
+                    <li class="pc-item">
+                        <a href="{{ route('dashboard.contact-list') }}" class="pc-link"><span
+                                class="pc-micon"><iconify-icon icon="tabler:message-filled" width="24" height="24"></iconify-icon></span><span class="pc-mtext">Messages</span></a>
+                    </li>
+                    <li class="pc-item">
+                        <a href="{{ route('dashboard.settings.index') }}" class="pc-link"><span
+                                class="pc-micon"><iconify-icon icon="ep:setting" width="24" height="24"></iconify-icon></span><span class="pc-mtext">Setting</span></a>
                     </li>
 
 
@@ -154,12 +168,7 @@
             </div>
             <!-- [Mobile Media Block end] -->
             <div class="ms-auto d-flex align-items-center">
-                <div class="message">
-                    <a href="{{ route('dashboard.contact-list') }}"
-                        class="d-flex align-items-center text-decoration-none justify-content-center text-dark">
-                        <iconify-icon icon="lets-icons:message-fill" width="28" height="28"></iconify-icon>
-                    </a>
-                </div>
+
                 <ul class="list-unstyled">
                     <li class="dropdown pc-h-item header-user-profile">
                         <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown"

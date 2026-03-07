@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Listeners\UpdateLastLogin;
 use App\Models\Backend\Products\Category;
 use App\Models\Backend\Products\Product;
+use App\Models\Backend\Setting\WebsiteSetting;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
@@ -55,11 +56,14 @@ class AppServiceProvider extends ServiceProvider
             $categories = Category::with('children')
                 ->whereNull('category_id')
                 ->get();
-
             
 
+            $globalSetting = WebsiteSetting::instance();
+
             $view->with('categories', $categories);
-          
+            
+
+            $view->with('globalSetting', $globalSetting);
 
         });
 
