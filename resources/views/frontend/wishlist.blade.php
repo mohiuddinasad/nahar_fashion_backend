@@ -23,68 +23,71 @@
                     Your wishlist is empty. <a href="{{ route('frontend.shop') }}">Continue Shopping</a>
                 </div>
             @else
-                <table class="table table-bordered text-center my-5">
-                    <thead class="bg-secondary text-dark">
-                        <tr>
-                            <th>Products</th>
-                            <th>Price</th>
-                            <th>Stock Status</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody class="align-middle">
-                        @foreach ($wishlists as $wishlist)
-                            @php $product = $wishlist->product; @endphp
-                            <tr id="wishlist-card-{{ $product->id }}">
-                                <td class="align-middle">
-                                    <div class="row align-items-center">
-                                        <div class="col-4">
-                                            <img class="rounded" style="width: 70px;"
-                                                src="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
-                                                alt="{{ $product->name }}">
-                                        </div>
-                                        <div class="name col-8 p-0" style="text-align: left;">
-                                            <h6 class="m-0">
-                                                <a href="{{ route('frontend.product-details', $product->slug) }}"
-                                                    class="text-dark">
-                                                    {{ $product->name }}
-                                                </a>
-                                            </h6>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="align-middle">৳{{ $product->price }}</td>
-                                <td class="align-middle">
-                                    @if ($product->stock_status == 'out_of_stock')
-                                        <span class="out_stock">Out of Stock</span>
-                                    @else
-                                        <span class="in_stock">In Stock</span>
-                                    @endif
-                                </td>
-                                <td class="align-middle">
-                                    @if ($product->stock_status == 'out_of_stock')
-                                        <button class="btn btn-sm btn-secondary" style="cursor: not-allowed;" disabled>Add to Cart</button>
-                                    @else
-                                        <button class="btn btn-sm btn-primary" onclick="openProductPopup(this)"
-                                            data-id="{{ $product->id }}" data-name="{{ $product->name }}"
-                                            data-price="{{ $product->discount_price ?? $product->price }}"
-                                            data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
-                                            data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
-                                            Add to Cart
-                                        </button>
-                                    @endif
-                                </td>
-                                <td class="align-middle">
-                                    <button type="button" class="btn btn-sm btn-danger wishlisted"
-                                        onclick="event.preventDefault(); toggleWishlist(this, {{ $product->id }})">
-                                        <i class="fa fa-times"></i>
-                                    </button>
-                                </td>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center my-5">
+                        <thead class="bg-secondary text-dark">
+                            <tr>
+                                <th>Products</th>
+                                <th>Price</th>
+                                <th>Stock Status</th>
+                                <th></th>
+                                <th></th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="align-middle">
+                            @foreach ($wishlists as $wishlist)
+                                @php $product = $wishlist->product; @endphp
+                                <tr id="wishlist-card-{{ $product->id }}">
+                                    <td class="align-middle">
+                                        <div class="row align-items-center">
+                                            <div class="col-4">
+                                                <img class="rounded" style="width: 70px;"
+                                                    src="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
+                                                    alt="{{ $product->name }}">
+                                            </div>
+                                            <div class="name col-8 p-0 px-md-3" style="text-align: left;">
+                                                <h6 class="m-0">
+                                                    <a href="{{ route('frontend.product-details', $product->slug) }}"
+                                                        class="text-dark">
+                                                        {{ $product->name }}
+                                                    </a>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">৳{{ $product->price }}</td>
+                                    <td class="align-middle">
+                                        @if ($product->stock_status == 'out_of_stock')
+                                            <span class="out_stock">Out of Stock</span>
+                                        @else
+                                            <span class="in_stock">In Stock</span>
+                                        @endif
+                                    </td>
+                                    <td class="align-middle">
+                                        @if ($product->stock_status == 'out_of_stock')
+                                            <button class="btn btn-sm btn-secondary" style="cursor: not-allowed;"
+                                                disabled>Add to Cart</button>
+                                        @else
+                                            <button class="btn btn-sm btn-primary" onclick="openProductPopup(this)"
+                                                data-id="{{ $product->id }}" data-name="{{ $product->name }}"
+                                                data-price="{{ $product->discount_price ?? $product->price }}"
+                                                data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
+                                                data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
+                                                Add to Cart
+                                            </button>
+                                        @endif
+                                    </td>
+                                    <td class="align-middle">
+                                        <button type="button" class="btn btn-sm btn-danger wishlisted"
+                                            onclick="event.preventDefault(); toggleWishlist(this, {{ $product->id }})">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             @endif
         </div>
     </section>

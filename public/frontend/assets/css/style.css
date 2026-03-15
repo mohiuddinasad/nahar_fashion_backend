@@ -20,6 +20,12 @@
     --danger: #dc3545;
     --light: #ffffff;
     --dark: #1c1c1c;
+    --brand-light: #d19c9720;
+    --brand-muted: #e8c4c0;
+    --text-inactive: #b0a09e;
+    --text-active: #d19c97;
+    --nav-bg: #ffffff;
+    --border: #f5e8e6;
     --breakpoint-xs: 0;
     --breakpoint-sm: 576px;
     --breakpoint-md: 768px;
@@ -11948,7 +11954,7 @@ footer .address span {
     padding: 36px 32px 28px;
     display: flex;
     flex-direction: column;
-    position: relative;
+    
     overflow-y: auto;
 }
 
@@ -11970,6 +11976,7 @@ footer .address span {
     transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     opacity: 0;
     transform: rotate(-90deg) scale(0.8);
+    z-index: 999;
     transition:
         opacity 0.3s ease 0.3s,
         transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s,
@@ -12014,13 +12021,13 @@ footer .address span {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 18px;
+    margin-bottom: 8px;
 }
 .cp-price {
     font-family: "DM Sans", sans-serif;
     font-size: 26px;
     font-weight: 700;
-    color: #c0392b;
+    color: #1a1a1a;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .cp-price.cp-price-update {
@@ -12042,7 +12049,6 @@ footer .address span {
 .cp-divider {
     height: 1px;
     background: linear-gradient(90deg, #e8e8e8, transparent);
-    margin-bottom: 18px;
 }
 
 /* ── Label ───────────────────────────── */
@@ -12083,14 +12089,14 @@ footer .address span {
     transform: scale(1);
 }
 .cp-variant-btn:hover {
-    border-color: #c0392b;
-    color: #c0392b;
+    border-color: #D19C97;
+    color: #D19C97;
     background: #fdf6f5;
     transform: scale(1.05);
 }
 .cp-variant-btn.active {
-    border-color: #c0392b;
-    background: #c0392b;
+    border-color: #D19C97;
+    background: #D19C97;
     color: #fff;
     font-weight: 600;
     box-shadow: 0 4px 14px rgba(192, 57, 43, 0.35);
@@ -12162,7 +12168,7 @@ footer .address span {
     gap: 10px;
     width: 100%;
     padding: 14px 20px;
-    background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+    background: #D19C97;
     color: #fff;
     border: none;
     border-radius: 12px;
@@ -12263,8 +12269,7 @@ footer .address span {
         justify-content: flex-start;
     }
     .cp-img-wrap {
-        width: 90px;
-        height: 110px;
+        width: 100%;
         flex-shrink: 0;
     }
     .cp-circle,
@@ -12277,4 +12282,174 @@ footer .address span {
     .cp-name {
         font-size: 18px;
     }
+}
+
+/***************************** mobile nav *****************************/
+/* ══════════════════════════════
+   CSS VARIABLES
+══════════════════════════════ */
+#mobileNav {
+    --brand: #d19c97;
+    --brand-light: #d19c9720;
+    --nav-bg: #ffffff;
+    --border: #f5e8e6;
+    --text-inactive: #b0a09e;
+    --text-active: #d19c97;
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    z-index: 1060;
+}
+
+/* ══════════════════════════════
+   FOOTER NAV
+══════════════════════════════ */
+#mobileNav .footer-nav {
+    background: var(--nav-bg);
+    border-top: 1.5px solid var(--border);
+    padding: 8px 4px 14px;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    position: relative;
+}
+
+/* shimmer top line */
+#mobileNav .footer-nav::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--brand) 50%,
+        transparent 100%
+    );
+    opacity: 0.35;
+}
+
+/* ══════════════════════════════
+   NAV ITEMS
+══════════════════════════════ */
+#mobileNav .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 12px;
+    position: relative;
+    transition: transform 0.18s ease;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    text-decoration: none;
+}
+
+/* active top indicator bar */
+#mobileNav .nav-item::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 20px;
+    height: 2.5px;
+    background: var(--brand);
+    border-radius: 3px;
+    transition: transform 0.22s ease;
+}
+
+#mobileNav .nav-item.active::before {
+    transform: translateX(-50%) scaleX(1);
+}
+
+#mobileNav .nav-item.active {
+    transform: translateY(-3px);
+}
+
+#mobileNav .nav-item:focus,
+#mobileNav .nav-item:focus-visible {
+    outline: none;
+    box-shadow: none;
+}
+
+/* ══════════════════════════════
+   ICON WRAPPER
+══════════════════════════════ */
+#mobileNav .icon-wrap {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: transparent;
+    transition: background 0.2s ease;
+}
+
+#mobileNav .nav-item.active .icon-wrap {
+    background: var(--brand-light);
+}
+
+#mobileNav .icon-wrap svg {
+    transition:
+        stroke 0.2s ease,
+        fill 0.2s ease;
+    display: block;
+}
+
+/* ══════════════════════════════
+   BADGE
+══════════════════════════════ */
+#mobileNav .badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 15px;
+    height: 15px;
+    background: var(--brand);
+    border-radius: 50%;
+    border: 2px solid #fff;
+    font-size: 8px;
+    font-weight: 700;
+    color: #fff;
+    font-family: sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+
+    /* override Bootstrap badge styles */
+    padding: 0;
+    vertical-align: unset;
+    white-space: unset;
+}
+
+/* ══════════════════════════════
+   NAV LABEL
+══════════════════════════════ */
+#mobileNav .nav-label {
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--text-inactive);
+    font-weight: 400;
+    transition:
+        color 0.2s ease,
+        font-weight 0.2s ease;
+    line-height: 1;
+    display: block;
+}
+
+#mobileNav .nav-item.active .nav-label {
+    color: var(--text-active);
+    font-weight: 600;
 }

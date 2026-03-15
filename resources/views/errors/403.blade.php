@@ -1,205 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>403 — Forbidden</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #f4f2ee;
-      --ink: #0d0d0d;
-      --mid: #8a8880;
-    }
-
-    html, body {
-      height: 100%;
-      background: var(--bg);
-      color: var(--ink);
-      font-family: 'DM Mono', monospace;
-      overflow: hidden;
-    }
-
-    /* ── SVG canvas ── */
-    .geo {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
-
-    /* ── Content ── */
-    .stage {
-      position: relative;
-      z-index: 1;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0;
-    }
-
-    .code {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(7rem, 20vw, 14rem);
-      line-height: 1;
-      letter-spacing: -0.04em;
-      color: var(--ink);
-      opacity: 0;
-      transform: translateY(24px);
-      animation: rise 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s forwards;
-    }
-
-    .line {
-      width: clamp(160px, 28vw, 320px);
-      height: 1px;
-      background: var(--ink);
-      transform: scaleX(0);
-      transform-origin: left;
-      animation: expand 0.7s cubic-bezier(0.16,1,0.3,1) 0.6s forwards;
-    }
-
-    .label {
-      margin-top: 20px;
-      font-size: 0.7rem;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--mid);
-      opacity: 0;
-      animation: rise 0.6s ease 0.85s forwards;
-    }
-
-    .msg {
-      margin-top: 8px;
-      font-size: 0.78rem;
-      color: var(--mid);
-      letter-spacing: 0.06em;
-      opacity: 0;
-      animation: rise 0.6s ease 1s forwards;
-    }
-
-    .back {
-      margin-top: 40px;
-      display: inline-block;
-      padding: 10px 28px;
-      border: 1px solid var(--ink);
-      font-family: 'DM Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--ink);
-      text-decoration: none;
-      opacity: 0;
-      animation: rise 0.6s ease 1.15s forwards;
-      transition: background 0.2s, color 0.2s;
-    }
-    .back:hover {
-      background: var(--ink);
-      color: var(--bg);
-    }
-
-    @keyframes rise {
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes expand {
-      to { transform: scaleX(1); }
-    }
-
-    /* geo animations */
-    .geo-shape {
-      animation: spin 22s linear infinite;
-      transform-origin: center;
-      transform-box: fill-box;
-    }
-    .geo-shape.rev { animation-direction: reverse; animation-duration: 18s; }
-    .geo-shape.slow { animation-duration: 35s; }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-  </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>403 - Forbidden</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        .auth-wrap { display:flex; flex-direction:column; width:100%; max-width:820px; border-radius:20px; overflow:hidden; background:#fff; border:0.5px solid #f0e0de; }
+        .auth-left { background:#fdf0ee; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem; gap:1rem; }
+        .auth-right { flex:1; padding:2rem 1.5rem; display:flex; flex-direction:column; justify-content:center; background:#fff; }
+        .auth-btn-primary { padding:10px 22px; background:#D19C97; color:#fff; border-radius:10px; font-size:13px; font-weight:500; text-decoration:none; display:inline-block; touch-action:manipulation; }
+        .auth-btn-primary:hover { background:#c48c87; }
+        .auth-btn-secondary { padding:10px 22px; background:#fdf0ee; color:#b07a75; border-radius:10px; font-size:13px; font-weight:500; text-decoration:none; display:inline-block; border:1px solid #f0dbd8; touch-action:manipulation; }
+        .auth-btn-secondary:hover { background:#fae4e0; }
+        @media (min-width: 640px) {
+            .auth-wrap { flex-direction:row; }
+            .auth-left { flex:0 0 42%; max-width:42%; padding:2.5rem; gap:1.5rem; }
+            .auth-right { padding:2.5rem 2rem; }
+        }
+    </style>
 </head>
-<body>
+<body style="margin:0;padding:0;background-color:#fdf6f5;">
+    <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:1rem;">
+        <div class="auth-wrap">
 
-<!-- Geometric background -->
-<svg class="geo" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <filter id="blur1"><feGaussianBlur stdDeviation="0.5"/></filter>
-  </defs>
+            <!-- Left Illustration Side -->
+            <div class="auth-left">
+                <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:clamp(80px,20vw,160px); height:clamp(80px,20vw,160px);">
+                    <circle cx="100" cy="100" r="90" fill="#fae4e0"/>
+                    <path d="M100 42L58 60v38c0 26 18.6 50.3 42 56 23.4-5.7 42-30 42-56V60L100 42z" fill="#e8c4be"/>
+                    <path d="M100 52L65 68v30c0 21 14.8 40.2 35 44.8 20.2-4.6 35-23.8 35-44.8V68L100 52z" fill="#fdf6f5"/>
+                    <path d="M88 88l24 24M112 88l-24 24" stroke="#D19C97" stroke-width="3.5" stroke-linecap="round"/>
+                    <circle cx="50" cy="65" r="4" fill="#f5c8c0"/>
+                    <circle cx="155" cy="65" r="3.5" fill="#f5c8c0"/>
+                    <circle cx="45" cy="148" r="3" fill="#edb8b0"/>
+                    <circle cx="158" cy="150" r="4" fill="#e8b8b0"/>
+                </svg>
+                <div style="text-align:center;">
+                    <h2 style="font-size:17px; font-weight:500; color:#5a3a36; margin:0;">Access denied</h2>
+                    <p style="font-size:12px; color:#a07870; margin-top:5px; line-height:1.6;">You don't have permission<br/>to view this page.</p>
+                </div>
+            </div>
 
-  <!-- Large rotating square top-right -->
-  <rect class="geo-shape slow" x="680" y="-80" width="320" height="320"
-        fill="none" stroke="#0d0d0d" stroke-width="1" opacity="0.12"/>
-  <rect class="geo-shape rev" x="710" y="-50" width="260" height="260"
-        fill="none" stroke="#0d0d0d" stroke-width="0.5" opacity="0.1"/>
+            <!-- Right Content Side -->
+            <div class="auth-right">
+                <div style="display:inline-flex; align-items:center; justify-content:center; width:52px; height:52px; border-radius:14px; background:#fdf0ee; margin-bottom:1.25rem;">
+                    <svg width="24" height="24" fill="none" stroke="#D19C97" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                </div>
+                <p style="font-size:12px; font-weight:500; color:#D19C97; margin:0 0 6px; letter-spacing:0.08em; text-transform:uppercase;">Error 403</p>
+                <h1 style="font-size:clamp(22px,5vw,28px); font-weight:500; color:#3a2a28; margin:0 0 10px;">Forbidden</h1>
+                <p style="font-size:clamp(12px,3vw,13px); color:#a09090; margin:0 0 2rem; line-height:1.7;">Sorry, you don't have permission to access this page. If you think this is a mistake, please contact your administrator.</p>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <a href="{{ url('/') }}" class="auth-btn-primary">Go home</a>
+                    <a href="javascript:history.back()" class="auth-btn-secondary">Go back</a>
+                </div>
+            </div>
 
-  <!-- Circle cluster bottom-left -->
-  <circle class="geo-shape" cx="100" cy="860" r="180"
-          fill="none" stroke="#0d0d0d" stroke-width="1" opacity="0.1"/>
-  <circle class="geo-shape rev" cx="100" cy="860" r="130"
-          fill="none" stroke="#0d0d0d" stroke-width="0.5" opacity="0.08"/>
-  <circle cx="100" cy="860" r="4" fill="#0d0d0d" opacity="0.15"/>
-
-  <!-- Triangle mid-left -->
-  <polygon class="geo-shape slow" points="60,400 160,250 260,400"
-           fill="none" stroke="#0d0d0d" stroke-width="0.8" opacity="0.1"/>
-
-  <!-- Dot grid top-left -->
-  <g opacity="0.07">
-    <circle cx="40" cy="40" r="1.5" fill="#0d0d0d"/>
-    <circle cx="70" cy="40" r="1.5" fill="#0d0d0d"/>
-    <circle cx="100" cy="40" r="1.5" fill="#0d0d0d"/>
-    <circle cx="130" cy="40" r="1.5" fill="#0d0d0d"/>
-    <circle cx="40" cy="70" r="1.5" fill="#0d0d0d"/>
-    <circle cx="70" cy="70" r="1.5" fill="#0d0d0d"/>
-    <circle cx="100" cy="70" r="1.5" fill="#0d0d0d"/>
-    <circle cx="130" cy="70" r="1.5" fill="#0d0d0d"/>
-    <circle cx="40" cy="100" r="1.5" fill="#0d0d0d"/>
-    <circle cx="70" cy="100" r="1.5" fill="#0d0d0d"/>
-    <circle cx="100" cy="100" r="1.5" fill="#0d0d0d"/>
-    <circle cx="130" cy="100" r="1.5" fill="#0d0d0d"/>
-    <circle cx="40" cy="130" r="1.5" fill="#0d0d0d"/>
-    <circle cx="70" cy="130" r="1.5" fill="#0d0d0d"/>
-    <circle cx="100" cy="130" r="1.5" fill="#0d0d0d"/>
-    <circle cx="130" cy="130" r="1.5" fill="#0d0d0d"/>
-  </g>
-
-  <!-- Diagonal lines bottom-right -->
-  <g opacity="0.07" stroke="#0d0d0d" stroke-width="0.8">
-    <line x1="820" y1="880" x2="1000" y2="700"/>
-    <line x1="840" y1="920" x2="1000" y2="760"/>
-    <line x1="860" y1="960" x2="1000" y2="820"/>
-    <line x1="880" y1="1000" x2="1000" y2="880"/>
-    <line x1="800" y1="840" x2="1000" y2="640"/>
-  </g>
-
-  <!-- Small accent cross center-right -->
-  <g opacity="0.18" stroke="#0d0d0d" stroke-width="1" transform="translate(820,480)">
-    <line x1="-12" y1="0" x2="12" y2="0"/>
-    <line x1="0" y1="-12" x2="0" y2="12"/>
-  </g>
-  <g opacity="0.1" stroke="#0d0d0d" stroke-width="0.8" transform="translate(200,600)">
-    <line x1="-8" y1="0" x2="8" y2="0"/>
-    <line x1="0" y1="-8" x2="0" y2="8"/>
-  </g>
-
-  <!-- Hexagon mid-right -->
-  <polygon class="geo-shape" points="900,300 930,283 960,300 960,334 930,351 900,334"
-           fill="none" stroke="#0d0d0d" stroke-width="0.8" opacity="0.1"/>
-</svg>
-
-<!-- Main content -->
-<div class="stage">
-  <div class="code">403</div>
-  <div class="line"></div>
-  <div class="label">Access Forbidden</div>
-  <div class="msg">You don't have permission to view this page.</div>
-  <a class="back" href="{{ route('dashboard') }}">← Return Home</a>
-</div>
-
+        </div>
+    </div>
 </body>
 </html>
