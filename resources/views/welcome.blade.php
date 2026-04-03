@@ -52,7 +52,7 @@
         <div class="row align-items-center py-3">
             <div class="col-lg-3 d-none d-lg-block">
                 <a href="" class="text-decoration-none">
-                    <img src="{{ asset('frontend/assets/img/logo.png') }}" alt="Logo" style="width: 140px;">
+                    <img src="{{ Storage::url($globalSetting->site_logo) }}" alt="Logo" style="width: 150px;">
                 </a>
             </div>
             <div class="col-lg-6 text-left">
@@ -472,8 +472,7 @@
                 <div id="header-carousel" class="carousel slide" data-ride="carousel">
 
                     <div class="carousel-inner">
-
-                        @foreach ($topBanners as $key => $banner)
+                        @forelse ($topBanners as $key => $banner)
                             <div class="carousel-item {{ $key == 0 ? 'active' : '' }}" style="height: 410px;">
                                 <a
                                     href="{{ $banner->category ? route('frontend.category-wise-product', $banner->category->slug) : '#' }}">
@@ -481,7 +480,16 @@
                                     <img class="img-fluid" src="{{ asset($banner->top_image) }}" alt="Banner Image">
                                 </a>
                             </div>
-                        @endforeach
+                        @empty
+                            <div class="carousel-item active" style="height: 410px;">
+                                <a
+                                    href="">
+
+                                    <img class="img-fluid" src="https://craftsnippets.com/articles_images/placeholder/placeholder.jpg" alt="Banner Image">
+                                </a>
+                            </div>
+                        @endforelse
+                        
 
                     </div>
 
@@ -665,7 +673,7 @@
                                 @if ($product->stock_status == 'out_of_stock')
                                     <button class="add-to-cart-btn out_stock" style="cursor: not-allowed" disabled
                                         data-id="{{ $product->id }}" data-name="{{ $product->name }}"
-                                        data-price="{{ $product->discount_price ?? $product->price }}"
+                                        data-price="{{ $product->price }}"
                                         data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
                                         data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
                                         <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>
@@ -675,7 +683,7 @@
                                     <button class="add-to-cart-btn" style="cursor: pointer"
                                         onclick="openProductPopup(this)" data-id="{{ $product->id }}"
                                         data-name="{{ $product->name }}"
-                                        data-price="{{ $product->discount_price ?? $product->price }}"
+                                        data-price="{{ $product->price }}"
                                         data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
                                         data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
                                         <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>
@@ -754,7 +762,7 @@
                                 @if ($product->stock_status == 'out_of_stock')
                                     <button class="add-to-cart-btn out_stock" style="cursor: not-allowed"
                                         data-id="{{ $product->id }}" data-name="{{ $product->name }}"
-                                        data-price="{{ $product->discount_price ?? $product->price }}"
+                                        data-price="{{ $product->price }}"
                                         data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
                                         data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
                                         <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>
@@ -764,7 +772,7 @@
                                     <button class="add-to-cart-btn" style="cursor: pointer"
                                         onclick="openProductPopup(this)" data-id="{{ $product->id }}"
                                         data-name="{{ $product->name }}"
-                                        data-price="{{ $product->discount_price ?? $product->price }}"
+                                        data-price="{{ $product->price }}"
                                         data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
                                         data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
                                         <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>
@@ -838,7 +846,7 @@
                                 @if ($product->stock_status == 'out_of_stock')
                                     <button class="add-to-cart-btn out_stock" style="cursor: not-allowed"
                                         data-id="{{ $product->id }}" data-name="{{ $product->name }}"
-                                        data-price="{{ $product->discount_price ?? $product->price }}"
+                                        data-price="{{ $product->price }}"
                                         data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
                                         data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
                                         <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>
@@ -848,7 +856,7 @@
                                     <button class="add-to-cart-btn" style="cursor: pointer"
                                         onclick="openProductPopup(this)" data-id="{{ $product->id }}"
                                         data-name="{{ $product->name }}"
-                                        data-price="{{ $product->discount_price ?? $product->price }}"
+                                        data-price="{{ $product->price }}"
                                         data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
                                         data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
                                         <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>

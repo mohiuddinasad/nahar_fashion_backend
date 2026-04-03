@@ -10,6 +10,7 @@ use App\Models\Backend\Orders\OrderImage;
 use App\Models\Backend\Orders\OrderItem;
 use App\Models\Backend\Products\Category;
 use App\Models\Backend\Products\Product;
+use App\Models\Backend\Setting\WebsiteSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -31,7 +32,8 @@ class HomePageController extends Controller
         }
         $topBanners = TopBanner::with('category')->get();
         $bottomBanners = BottomBanner::with('category')->get();
-        return view('welcome', compact('products', 'categories', 'featuredProducts', 'newProducts', 'wishlistCount', 'topBanners', 'bottomBanners'));
+        $globalSetting = WebsiteSetting::instance();
+        return view('welcome', compact('products', 'categories', 'featuredProducts', 'newProducts', 'wishlistCount', 'topBanners', 'bottomBanners','globalSetting'));
     }
 
     public function store(Request $request)

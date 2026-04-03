@@ -148,7 +148,7 @@
                                     @if ($product->stock_status == 'out_of_stock')
                                         <button class="add-to-cart-btn out_stock" style="cursor: not-allowed" disabled
                                             data-id="{{ $product->id }}" data-name="{{ $product->name }}"
-                                            data-price="{{ $product->discount_price ?? $product->price }}"
+                                            data-price="{{ $product->price }}"
                                             data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
                                             data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
                                             <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>
@@ -158,7 +158,7 @@
                                         <button class="add-to-cart-btn" style="cursor: pointer"
                                             onclick="openProductPopup(this)" data-id="{{ $product->id }}"
                                             data-name="{{ $product->name }}"
-                                            data-price="{{ $product->discount_price ?? $product->price }}"
+                                            data-price="{{ $product->price }}"
                                             data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
                                             data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
                                             <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>

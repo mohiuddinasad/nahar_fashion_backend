@@ -13,6 +13,7 @@ function openProductPopup(btn) {
     document.getElementById("popupImage").src         = image;
     document.getElementById("popupName").textContent  = name;
     document.getElementById("popupProductId").value   = id;
+    document.getElementById("popupProductId").dataset.basePrice = price; // base price store
     document.getElementById("popupVariantId").value   = "";
     document.getElementById("popupQty").value         = 1;
 
@@ -63,9 +64,8 @@ function openProductPopup(btn) {
         variantSection.style.display = "none";
         document.getElementById("popupVariantId").value = "";
 
-        // Price product এর default price
-        document.getElementById("popupPrice").textContent =
-            "৳ " + parseFloat(price).toFixed(2);
+        // Variant নেই → base price দিয়ে total calculate করো
+        updatePopupTotal();
 
         // Link set করুন
         updateCartLink();
@@ -89,9 +89,16 @@ function openProductPopup(btn) {
 // ── Popup Total Price Calculate ────────────────────
 function updatePopupTotal() {
     const activeVariant = document.querySelector(".cp-variant-btn.active");
-    const price = activeVariant
-        ? parseFloat(activeVariant.dataset.price)
-        : 0;
+
+    let price;
+    if (activeVariant) {
+        // Variant আছে → variant এর price নাও
+        price = parseFloat(activeVariant.dataset.price);
+    } else {
+        // Variant নেই → product এর base price নাও
+        const basePrice = document.getElementById("popupProductId").dataset.basePrice;
+        price = parseFloat(basePrice) || 0;
+    }
 
     const qty   = parseInt(document.getElementById("popupQty").value) || 1;
     const total = price * qty;

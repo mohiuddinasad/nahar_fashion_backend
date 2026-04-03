@@ -243,7 +243,7 @@
 
                 <a href="" class="wishlist d-flex align-items-center {{ $isWishlisted ? 'wishlisted' : '' }}"
                     onclick="event.preventDefault(); toggleWishlist(this, {{ $product->id }})">
-                    <span class="d-flex align-items-center" ><i class="{{ $isWishlisted ? 'fas' : 'far' }} fa-heart"></i>
+                    <span class="d-flex align-items-center"><i class="{{ $isWishlisted ? 'fas' : 'far' }} fa-heart"></i>
                     </span>
                     Add to wishlist
                 </a>
@@ -299,9 +299,12 @@
                 </div>
                 <p class="total_price">Total Price :
                     <b class="text-primary font-weight-bold" id="variantPrice">
-                        ৳ {{ number_format($product->productVariant->first()->total_price ?? $product->price, 2) }}
+                        @if ($product->productVariant->isNotEmpty())
+                            ৳ {{ number_format($product->productVariant->first()->total_price, 2) }}
+                        @else
+                            ৳ {{ number_format($product->price, 2) }}
+                        @endif
                     </b>
-
                 </p>
                 <form action="{{ route('frontend.add.cart') }}" method="GET">
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
@@ -309,8 +312,12 @@
                         value="{{ $product->productVariant->first()?->id }}">
                     <input type="hidden" name="qty" id="selectedQty" value="1">
 
-                    <button type="submit" class="btn btn-primary px-3">
-                        <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
+                    <button type="submit"
+                        class="btn btn-primary px-3 {{ $product->stock_status == 'out_of_stock' ? 'disabled' : '' }}"
+                        {{ $product->stock_status == 'out_of_stock' ? 'disabled' : '' }}
+                        style="{{ $product->stock_status == 'out_of_stock' ? 'cursor: not-allowed; background-color: #cccccc; color: #fff; border: none;' : 'cursor: pointer;' }}">
+                        <i class="fa fa-shopping-cart mr-1"></i>
+                        {{ $product->stock_status == 'out_of_stock' ? 'Out of Stock' : 'Add To Cart' }}
                     </button>
                 </form>
 
@@ -522,23 +529,22 @@
                                                     class="old-price d-none">৳{{ number_format($related->discount_price ?? 0, 2) }}</span>
                                             @endif
                                         </div>
-                                        @if ($product->stock_status == 'out_of_stock')
+                                        @if ($related->stock_status == 'out_of_stock')
                                             <button class="add-to-cart-btn out_stock" style="cursor: not-allowed" disabled
-                                                data-id="{{ $product->id }}" data-name="{{ $product->name }}"
-                                                data-price="{{ $product->discount_price ?? $product->price }}"
-                                                data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
-                                                data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
+                                                data-id="{{ $related->id }}" data-name="{{ $related->name }}"
+                                                data-price="{{ $related->price }}"
+                                                data-image="{{ $related->productImage->first() ? asset('storage/' . $related->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
+                                                data-variants="{{ json_encode($related->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
                                                 <iconify-icon icon="bx:cart" width="24"
                                                     height="24"></iconify-icon>
                                                 <span>Out of Stock</span>
                                             </button>
                                         @else
                                             <button class="add-to-cart-btn" style="cursor: pointer"
-                                                onclick="openProductPopup(this)" data-id="{{ $product->id }}"
-                                                data-name="{{ $product->name }}"
-                                                data-price="{{ $product->discount_price ?? $product->price }}"
-                                                data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
-                                                data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
+                                                onclick="openProductPopup(this)" data-id="{{ $related->id }}"
+                                                data-name="{{ $related->name }}" data-price="{{ $related->price }}"
+                                                data-image="{{ $related->productImage->first() ? asset('storage/' . $related->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
+                                                data-variants="{{ json_encode($related->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
                                                 <iconify-icon icon="bx:cart" width="24"
                                                     height="24"></iconify-icon>
                                                 <span>Add to Cart</span>
@@ -607,7 +613,7 @@
             const selectedVariant = document.querySelector('input[name="variant"]:checked');
             const price = selectedVariant ?
                 parseFloat(selectedVariant.dataset.price) :
-                {{ $product->discount_price ?? $product->price }};
+                {{ $product->price }};
 
             const qty = parseInt($("#detailQtyInput").val());
             const total = price * qty;

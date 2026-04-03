@@ -55,7 +55,7 @@
         <div class="row align-items-center py-3">
             <div class="col-lg-3 d-none d-lg-block">
                 <a href="" class="text-decoration-none">
-                    <h2 class="m-0 display-5 font-weight-semi-bold"><span class>Nahar Fashion</h2>
+                <img style="width:150px;" src="{{ Storage::url($globalSetting->site_logo) }}" alt="">
                 </a>
             </div>
             <div class="col-lg-6 text-left">
