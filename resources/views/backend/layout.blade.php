@@ -15,7 +15,7 @@
     <meta name="author" content="codedthemes" />
 
     <!-- [Favicon] icon -->
-    <link rel="icon" href="{{ asset('backend/assets/images/favicon.svg') }}" type="image/x-icon" />
+    <link rel="icon" href="{{ Storage::url($globalSetting->site_favicon) }}" type="image/x-icon" />
 
     <!-- map-vector css -->
     <link rel="stylesheet" href="{{ asset('backend/assets/css/plugins/jsvectormap.min.css') }}" />

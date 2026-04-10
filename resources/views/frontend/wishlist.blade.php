@@ -37,7 +37,7 @@
                         <tbody class="align-middle">
                             @foreach ($wishlists as $wishlist)
                                 @php $product = $wishlist->product; @endphp
-                                <tr id="wishlist-card-{{ $product->id }}">
+                                <tr id="wishlist-card-{{ $product->id }}" class="product_list">
                                     <td class="align-middle">
                                         <div class="row align-items-center">
                                             <div class="col-4">
@@ -70,7 +70,7 @@
                                         @else
                                             <button class="btn btn-sm btn-primary" onclick="openProductPopup(this)"
                                                 data-id="{{ $product->id }}" data-name="{{ $product->name }}"
-                                                data-price="{{ $product->discount_price ?? $product->price }}"
+                                                data-price="{{ $product->price }}"
                                                 data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
                                                 data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
                                                 Add to Cart

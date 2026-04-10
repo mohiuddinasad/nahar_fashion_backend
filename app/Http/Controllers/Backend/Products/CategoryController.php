@@ -104,4 +104,22 @@ class CategoryController extends Controller
         return redirect()->route('dashboard.categories.category-list')
             ->with('success', 'Category deleted successfully!');
     }
+
+    // CategoryController.php
+
+    public function ajaxSearch(Request $request)
+    {
+        $q = $request->get('q', '');
+
+        $categories = Category::with('parent')
+            ->when($q, fn ($query) => $query->where('name', 'like', "%{$q}%"))
+            ->orderBy('name')
+            ->paginate(10);
+
+        return response()->json([
+            'html' => view('backend.categories.partials.category-table-body', compact('categories'))->render(),
+            'total' => $categories->total(),
+            'links' => $categories->links()->toHtml(),
+        ]);
+    }
 }

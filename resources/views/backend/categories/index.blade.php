@@ -2,209 +2,302 @@
 
 @push('backend_css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
-        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <style>
+        .page-title { font-size: 22px; font-weight: 600; color: #111; }
+
+        .alert-success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+        .alert-danger  { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+        .search-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .table-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .table-meta {
+            padding: 10px 1.25rem;
+            font-size: 13px;
+            color: #6b7280;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .table-meta strong { color: #111; }
+
+        .category-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .category-table thead tr { background: #f9fafb; }
+        .category-table thead th {
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 13px;
+            color: #6b7280;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
+        }
+        .category-table tbody tr { border-bottom: 1px solid #f3f4f6; }
+        .category-table tbody tr:last-child { border-bottom: none; }
+        .category-table tbody tr:hover { background: #fafafa; }
+        .category-table td { padding: 10px 14px; color: #111; vertical-align: middle; }
+
+        .cat-img {
+            width: 44px; height: 44px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid #e5e7eb;
+        }
+        .cat-img-placeholder {
+            width: 44px; height: 44px;
+            border-radius: 8px;
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            display: flex; align-items: center; justify-content: center;
+            color: #9ca3af; font-size: 18px;
+        }
+
+        .parent-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            background: #f3f4f6;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+        }
+        .top-badge {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-color: #bfdbfe;
+        }
+
+        .slug-text { font-size: 12px; color: #9ca3af; font-family: monospace; }
+
+        .btn-edit-sm {
+            padding: 5px 13px;
+            font-size: 13px;
+            border: 1px solid #d1d5db;
+            background: #fff;
+            color: #374151;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-edit-sm:hover { background: #f9fafb; color: #111; }
+
+        .btn-delete-sm {
+            padding: 5px 13px;
+            font-size: 13px;
+            border: 1px solid #fecaca;
+            background: #fef2f2;
+            color: #b91c1c;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .btn-delete-sm:hover { background: #fee2e2; }
+
+        .btn-add {
+            background: #111;
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-add:hover { background: #333; color: #fff; }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 12px;
+            font-size: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: #fff;
+            color: #111;
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .search-input:focus {
+            border-color: #9ca3af;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+        }
+
+        .btn-search {
+            padding: 8px 20px;
+            font-size: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: #fff;
+            color: #111;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-search:hover { background: #f9fafb; }
+
+        /* Loading spinner inside table */
+        .table-loading {
+            opacity: 0.4;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        /* Pagination */
+        .pagination .page-link {
+            border: 1px solid #e5e7eb;
+            color: #374151;
+            border-radius: 6px !important;
+            margin: 0 2px;
+            padding: 5px 11px;
+            font-size: 13px;
+        }
+        .pagination .page-item.active .page-link {
+            background: #111;
+            border-color: #111;
+            color: #fff;
+        }
+        .pagination .page-link:hover { background: #f9fafb; color: #111; }
+
+        @media (max-width: 576px) {
+            .hide-mobile { display: none; }
+            .btn-search { width: 100%; text-align: center; }
+        }
+    </style>
 @endpush
 
 @section('backend_content')
-    <div class="container p-4">
+    <div class="container py-4 px-3 px-md-4" style="max-width: 1100px;">
 
         {{-- Page Header --}}
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold mb-0">Categories</h2>
-            <a href="{{ route('dashboard.categories.category-create') }}" class="btn btn-primary">+ Add Category</a>
+            <h2 class="page-title mb-0">Categories</h2>
+            <a href="{{ route('dashboard.categories.category-create') }}" class="btn-add">
+                + Add Category
+            </a>
         </div>
 
-        {{-- Success / Error --}}
+        {{-- Alerts --}}
         @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show">
+            <div class="alert alert-success alert-dismissible fade show rounded-3 mb-3" role="alert">
                 {{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
         @if (session('error'))
-            <div class="alert alert-danger alert-dismissible fade show">
+            <div class="alert alert-danger alert-dismissible fade show rounded-3 mb-3" role="alert">
                 {{ session('error') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
-        {{-- Search Box --}}
-        <div class="card mb-3">
-            <div class="card-body">
-                <form action="{{ route('dashboard.categories.category-list') }}" method="GET">
-                    <div class="row g-3 align-items-end">
-
-                        {{-- Search by Name --}}
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold">Search by Name</label>
-                            <div class="position-relative">
-                                <input type="text" name="search" id="categorySearchInput" class="form-control"
-                                    placeholder="Type category name..." value="{{ request('search') }}" autocomplete="off">
-                                {{-- Suggestion dropdown --}}
-                                <ul id="categorySuggestions" class="list-group position-absolute w-100 shadow-sm"
-                                    style="display:none; z-index:9999; top:100%; left:0; max-height:220px; overflow-y:auto;">
-                                </ul>
-                            </div>
-                        </div>
-
-
-
-                        {{-- Buttons --}}
-                        <div class="col-md-4 d-flex gap-2">
-                            <button type="submit" class="btn btn-primary w-20">
-                                Search
-                            </button>
-
-                        </div>
-
-                    </div>
-                </form>
+        {{-- Search --}}
+        <div class="search-card">
+            <div class="d-flex gap-2 align-items-end flex-wrap">
+                <div class="flex-grow-1" style="min-width: 220px;">
+                    <label class="form-label mb-1" style="font-size:13px; font-weight:500; color:#6b7280;">
+                        Search by name
+                    </label>
+                    <input
+                        type="text"
+                        id="categorySearchInput"
+                        class="search-input"
+                        placeholder="Type to search categories..."
+                        value="{{ request('search') }}"
+                        autocomplete="off"
+                    >
+                </div>
             </div>
         </div>
 
         {{-- Table --}}
-        <div class="card">
-            <div class="card-body">
+        <div class="table-card">
 
-                {{-- Result count --}}
-                <p class="text-muted mb-2">
-                    Total <strong>{{ $categories->total() }}</strong> categories found
-                    @if (request('search') || request('parent_id'))
-                        for your search
-                    @endif
-                </p>
+            <div class="table-meta" id="tableMeta">
+                Total <strong>{{ $categories->total() }}</strong> categories found
+            </div>
 
-                <table class="table table-bordered table-hover align-middle">
-                    <thead class="table-dark">
+            <div class="table-responsive">
+                <table class="category-table">
+                    <thead>
                         <tr>
                             <th>#</th>
                             <th>Image</th>
                             <th>Name</th>
-                            <th>Parent Category</th>
-                            <th>Slug</th>
+                            <th class="hide-mobile">Parent</th>
+                            <th class="hide-mobile">Slug</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @forelse($categories as $category)
-                            <tr>
-                                <td>{{ $categories->firstItem() + $loop->index }}</td>
-                                <td>
-                                    @if ($category->category_image)
-                                        <img src="{{ Storage::url($category->category_image) }}" width="55"
-                                            height="55" style="object-fit:cover;" class="rounded">
-                                    @else
-                                        <span class="text-muted">—</span>
-                                    @endif
-                                </td>
-                                <td>{{ $category->name }}</td>
-                                <td>{{ $category->parent->name ?? '— Top Level' }}</td>
-                                <td><small class="text-muted">{{ $category->slug }}</small></td>
-                                <td>
-                                    <a href="{{ route('dashboard.categories.category-edit', $category) }}"
-                                        class="btn btn-sm btn-warning">Edit</a>
-
-                                    <form action="{{ route('dashboard.categories.category-delete', $category) }}"
-                                        method="POST" class="d-inline"
-                                        onsubmit="return confirm('Are you sure you want to delete this category?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center text-muted py-4">
-                                    No categories found.
-                                    @if (request('search') || request('parent_id'))
-                                        <a href="{{ route('dashboard.categories.category-list') }}">Clear search</a>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforelse
+                    <tbody id="categoryTableBody">
+                        @include('backend.categories.partials.category-table-body')
                     </tbody>
                 </table>
-
-                {{-- Pagination (keeps search params) --}}
-                {{ $categories->links() }}
-
             </div>
-        </div>
 
+            {{-- Pagination --}}
+            <div class="d-flex justify-content-center py-3" id="paginationWrap">
+                {{ $categories->links() }}
+            </div>
+
+        </div>
     </div>
 @endsection
 
 @push('backend_js')
-    <script>
-        $(document).ready(function() {
-            $('#parentFilter').select2({
-                theme: 'bootstrap-5',
-                placeholder: '— All Categories —',
-                allowClear: true,
+<script>
+    const categoryInput  = document.getElementById('categorySearchInput');
+    const tableBody      = document.getElementById('categoryTableBody');
+    const tableMeta      = document.getElementById('tableMeta');
+    const paginationWrap = document.getElementById('paginationWrap');
+    const ajaxUrl        = "{{ route('dashboard.categories.ajax-search') }}";
+
+    let debounceTimer = null;
+
+    // Type করলে AJAX search
+    categoryInput.addEventListener('input', function () {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => doSearch(this.value.trim()), 300);
+    });
+
+    function doSearch(q) {
+        // Loading state
+        tableBody.classList.add('table-loading');
+
+        fetch(`${ajaxUrl}?q=${encodeURIComponent(q)}`)
+            .then(res => res.json())
+            .then(data => {
+                // Table rows update
+                tableBody.innerHTML = data.html;
+
+                // Meta text update
+                if (q) {
+                    tableMeta.innerHTML = `Total <strong>${data.total}</strong> categories found for "<strong>${q}</strong>"`;
+                } else {
+                    tableMeta.innerHTML = `Total <strong>${data.total}</strong> categories found`;
+                }
+
+                // Pagination update
+                paginationWrap.innerHTML = data.links;
+
+                tableBody.classList.remove('table-loading');
+            })
+            .catch(() => {
+                tableBody.classList.remove('table-loading');
             });
-        });
-    </script>
-
-    <script>
-        // ── Select2 for parent filter ──────────────────────
-        $(document).ready(function() {
-            $('#parentFilter').select2({
-                theme: 'bootstrap-5',
-                placeholder: '— All Categories —',
-                allowClear: true,
-            });
-        });
-
-        // ── Auto suggest for category name ────────────────
-        const categoryInput = document.getElementById('categorySearchInput');
-        const categorySuggestions = document.getElementById('categorySuggestions');
-
-        categoryInput.addEventListener('input', function() {
-            const q = this.value.trim();
-
-            if (q.length < 2) {
-                categorySuggestions.style.display = 'none';
-                categorySuggestions.innerHTML = '';
-                return;
-            }
-
-            fetch(`{{ route('dashboard.categories.category-search') }}?q=${encodeURIComponent(q)}`)
-                .then(res => res.json())
-                .then(data => {
-                    categorySuggestions.innerHTML = '';
-
-                    if (data.length === 0) {
-                        categorySuggestions.style.display = 'none';
-                        return;
-                    }
-
-                    data.forEach(name => {
-                        const li = document.createElement('li');
-                        li.className = 'list-group-item list-group-item-action';
-                        li.style.cursor = 'pointer';
-                        li.textContent = name;
-
-                        // Click করলে input এ বসে যাবে এবং form submit হবে
-                        li.addEventListener('click', function() {
-                            categoryInput.value = name;
-                            categorySuggestions.style.display = 'none';
-                            categoryInput.closest('form').submit();
-                        });
-
-                        categorySuggestions.appendChild(li);
-                    });
-
-                    categorySuggestions.style.display = 'block';
-                });
-        });
-
-        // বাইরে click করলে suggestion বন্ধ হবে
-        document.addEventListener('click', function(e) {
-            if (!categoryInput.contains(e.target)) {
-                categorySuggestions.style.display = 'none';
-            }
-        });
-    </script>
+    }
+</script>
 @endpush

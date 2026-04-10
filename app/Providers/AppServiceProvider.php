@@ -56,12 +56,24 @@ class AppServiceProvider extends ServiceProvider
             $categories = Category::with('children')
                 ->whereNull('category_id')
                 ->get();
-            
+
 
             $globalSetting = WebsiteSetting::instance();
 
             $view->with('categories', $categories);
-            
+
+
+            $view->with('globalSetting', $globalSetting);
+
+        });
+        View::composer('backend.*', function ($view) {
+
+
+
+            $globalSetting = WebsiteSetting::instance();
+
+           
+
 
             $view->with('globalSetting', $globalSetting);
 

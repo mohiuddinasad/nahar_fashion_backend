@@ -20,7 +20,6 @@ use App\Http\Controllers\Frontend\Wishlist\WishlistController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -60,6 +59,9 @@ Route::prefix('dashboard/')->name('dashboard.')->middleware(['role:super_admin|a
         Route::put('/category-update/{category}', [CategoryController::class, 'update'])->name('category-update');
         Route::delete('/category-delete/{category}', [CategoryController::class, 'destroy'])->name('category-delete');
         Route::get('/category-search', [CategoryController::class, 'search'])->name('category-search');
+        // web.php
+        Route::get('/dashboard/categories/ajax-search', [CategoryController::class, 'ajaxSearch'])
+            ->name('ajax-search');
     });
 
     // ─── Products ─────────────────────────────────────────────────
@@ -71,6 +73,8 @@ Route::prefix('dashboard/')->name('dashboard.')->middleware(['role:super_admin|a
         Route::put('/product-update/{product}', [ProductController::class, 'update'])->name('product-update');
         Route::delete('/product-delete/{product}', [ProductController::class, 'destroy'])->name('product-delete');
         Route::get('/product-search', [ProductController::class, 'search'])->name('product-search');
+        Route::get('/ajax-search', [ProductController::class, 'ajaxSearch'])
+    ->name('ajax-search');
     });
     // ─── banners ─────────────────────────────────────────────────
     Route::prefix('banners')->name('banners.')->middleware(['role:super_admin|admin|manager'])->group(function () {

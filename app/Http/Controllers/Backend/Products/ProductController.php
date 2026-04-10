@@ -34,13 +34,20 @@ class ProductController extends Controller
         return view('backend.products.index', compact('products', 'categories'));
     }
 
-    public function search(Request $request)
+    public function ajaxSearch(Request $request)
     {
-        $results = Product::where('name', 'like', '%'.$request->q.'%')
-            ->limit(10)
-            ->pluck('name');
+        $q = $request->get('q', '');
 
-        return response()->json($results);
+        $products = Product::with(['productImage', 'category'])
+            ->when($q, fn ($query) => $query->where('name', 'like', "%{$q}%"))
+            ->orderBy('name')
+            ->paginate(10);
+
+        return response()->json([
+            'html' => view('backend.products.partials.product-table-body', compact('products'))->render(),
+            'total' => $products->total(),
+            'links' => $products->links('pagination::bootstrap-5')->toHtml(),
+        ]);
     }
 
     public function create()
@@ -169,6 +176,4 @@ class ProductController extends Controller
         return redirect()->route('dashboard.products.product-list')
             ->with('success', 'Product deleted successfully!');
     }
-
-
 }

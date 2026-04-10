@@ -11721,6 +11721,7 @@ footer .address span {
     padding: 4px 8px;
 }
 
+
 /******************************** End Wishlist page ********************************/
 
 /******************************** start cart popup ********************************/
@@ -11954,7 +11955,7 @@ footer .address span {
     padding: 36px 32px 28px;
     display: flex;
     flex-direction: column;
-    
+
     overflow-y: auto;
 }
 

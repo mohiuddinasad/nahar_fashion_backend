@@ -26,7 +26,7 @@
     @yield('meta')
 
     <!-- Favicon -->
-    <link href="./assets/img/favicon.ico" rel="icon">
+    <link href="{{ Storage::url($globalSetting->site_favicon) }}" rel="icon">
     <!-- <link rel="stylesheet" href="./assets/css/bootstrap.min.css"> -->
 
     <!-- Google Web Fonts -->
@@ -266,7 +266,7 @@
                         <div class="navbar-nav mr-auto py-0">
                             <a href="{{ route('frontend.home') }}" class="nav-item nav-link">Home</a>
                             <a href="{{ route('frontend.shop') }}" class="nav-item nav-link">Shop</a>
-                            <a href="shop.html" class="nav-item nav-link">Wholesale</a>
+                            {{-- <a href="shop.html" class="nav-item nav-link">Wholesale</a> --}}
                             <a href="{{ route('frontend.contact') }}" class="nav-item nav-link">Contact</a>
                             <a href="{{ route('frontend.track-order') }}" class="nav-item nav-link">Track Order</a>
                         </div>

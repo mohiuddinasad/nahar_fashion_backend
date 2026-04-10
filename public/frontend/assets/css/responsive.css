@@ -434,4 +434,11 @@
     #contact .contact-info .icon {
         padding: 0 !important;
     }
+
+    #wishlist_product .table{
+        width: 690px !important;
+    }
+    #wishlist_product .product_list .name{
+        padding: 0 20px !important;
+    }
 }
