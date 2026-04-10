@@ -474,16 +474,16 @@
     @yield(section: 'frontend_content')
     <!-- Footer Start -->
 
-    <footer class="bg-secondary text-dark">
+     <footer class="bg-secondary text-dark">
 
         <div class="container mt-5 pt-5">
             <div class="row pt-5">
                 <div class="col-lg-4 col-md-12 mb-5 pr-3 pr-xl-5">
-                    <a href="" class="text-decoration-none">
-                        <h1 class="mb-4 display-5 font-weight-semi-bold">Nahar
-                            Fashion</h1>
+                    <a href="{{ route('frontend.home') }}" class="text-decoration-none mb-2">
+                        <img style="width:200px;" src="{{ Storage::url($globalSetting->site_logo) }}" alt="">
                     </a>
-                    <p>We produce high quality textile products. Our
+                    <br>
+                    <p class="pt-2">We produce high quality textile products. Our
                         main products are Chair Cover, Sofa Cover, Table
                         Cover</p>
 
@@ -494,18 +494,18 @@
                             <h5 class="font-weight-bold text-dark mb-4">Quick
                                 Links</h5>
                             <div class="d-flex flex-column justify-content-start">
-                                <a class="text-dark text-decoration-none mb-2" href="index.html"><i
+                                <a class="text-dark text-decoration-none mb-2" href="{{ route('frontend.home') }}"><i
                                         class="fa fa-angle-right mr-2"></i>Home</a>
-                                <a class="text-dark text-decoration-none mb-2" href="shop.html"><i
+                                <a class="text-dark text-decoration-none mb-2" href="{{ route('frontend.shop') }}"><i
                                         class="fa fa-angle-right mr-2"></i>Our
                                     Shop</a>
 
-                                <a class="text-dark text-decoration-none mb-2" href="cart.html"><i
+                                <a class="text-dark text-decoration-none mb-2" href="{{ route('frontend.cart') }}"><i
                                         class="fa fa-angle-right mr-2"></i>Shopping
                                     Cart</a>
-                                <a class="text-dark text-decoration-none mb-2" href="checkout.html"><i
-                                        class="fa fa-angle-right mr-2"></i>Checkout</a>
-                                <a class="text-dark text-decoration-none" href="contact.html"><i
+                                <a class="text-dark text-decoration-none mb-2" href="{{ route('frontend.track-order') }}"><i
+                                        class="fa fa-angle-right mr-2"></i>Track Order</a>
+                                <a class="text-dark text-decoration-none" href="{{ route('frontend.contact') }}"><i
                                         class="fa fa-angle-right mr-2"></i>Contact
                                     Us</a>
                             </div>
@@ -553,7 +553,7 @@
                         Fashion. All Rights Reserved.</p>
                 </div>
                 <div class="col-lg-6 mb-3 text-md-right">
-                    <p class="mb-0 text-dark">Develop by <a href="https://mohiuddinasad.netlify.app">Mohiuddin
+                    <p class="mb-0 text-dark">Develop by <a href="https://mohiuddinasad.com">Mohiuddin
                             Asad</a></p>
 
                 </div>

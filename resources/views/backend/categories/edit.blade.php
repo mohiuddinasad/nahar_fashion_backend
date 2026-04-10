@@ -1,5 +1,5 @@
 @extends('backend.layout')
-
+@section('backend_title', 'Edit Category')
 @push('backend_css')
 @endpush
 

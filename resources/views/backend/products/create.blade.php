@@ -1,5 +1,5 @@
 @extends('backend.layout')
-
+@section('backend_title', 'Add New Product')
 @push('backend_css')
 
 @endpush

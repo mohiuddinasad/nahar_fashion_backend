@@ -1,6 +1,6 @@
 @extends('backend.layout')
 
-@section('title', 'Role Management')
+@section('backend_title', 'Role Management')
 
 @section('backend_content')
     @push('backend_css')

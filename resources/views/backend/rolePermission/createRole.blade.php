@@ -1,6 +1,6 @@
 @extends('backend.layout')
 
-@section('title', 'Create Role')
+@section('backend_title', 'Create Role')
 
 @section('backend_content')
 @push('backend_css')
@@ -52,7 +52,7 @@
     .btn-cancel-link { display: inline-flex; align-items: center; gap: 6px; background: white; color: var(--gray); border: 1px solid var(--border); padding: 11px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; }
     .btn-cancel-link:hover { background: var(--bg); }
 </style>
-    
+
 @endpush
 <div class="rp-wrapper">
 
@@ -164,6 +164,6 @@
             .forEach(c => c.checked = checkbox.checked);
     }
 </script>
-    
+
 @endpush
 @endsection

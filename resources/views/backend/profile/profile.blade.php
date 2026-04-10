@@ -1,4 +1,5 @@
 @extends('backend.layout')
+@section('backend_title', 'Edit Profile')
 @push('backend_css')
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');

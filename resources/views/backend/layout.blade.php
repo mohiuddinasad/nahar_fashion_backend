@@ -58,7 +58,7 @@
             <div class="m-header">
                 <a href="{{ route('dashboard') }}" class="b-brand text-primary">
                     <!-- ========   Change your logo from here   ============ -->
-                    <img src="{{ asset('backend/assets/images/logo-dark.svg') }}" alt="logo image" class="logo-lg" />
+                    <img src="{{ Storage::url($globalSetting->site_logo) }}" alt="logo image" class="logo-lg" />
                 </a>
             </div>
             <div class="navbar-content">
@@ -142,11 +142,11 @@
     </nav>
     <!-- [ Sidebar Menu ] end -->
     <!-- [ Header Topbar ] start -->
-    <header class="pc-header" style="background: #D19C97">
+    <header class="pc-header shadow-sm" style="background: #fff">
         <div class="m-header">
             <a href="{{ route('frontend.home') }}" class="b-brand text-primary">
                 <!-- ========   Change your logo from here   ============ -->
-                <h3>Nahar Fashion</h3>
+                <img src="{{ Storage::url($globalSetting->site_logo) }}" alt="logo image" class="logo-lg" />
             </a>
         </div>
         <div class="header-wrapper"> <!-- [Mobile Media Block] start -->
@@ -155,12 +155,12 @@
                     <!-- ======= Menu collapse Icon ===== -->
                     <li class="pc-h-item pc-sidebar-collapse">
                         <a href="#" class="pc-head-link ms-0" id="sidebar-hide">
-                            <i class="ph ph-list"></i>
+                            <i class="ph ph-list text-dark"></i>
                         </a>
                     </li>
                     <li class="pc-h-item pc-sidebar-popup">
                         <a href="#" class="pc-head-link ms-0" id="mobile-collapse">
-                            <i class="ph ph-list"></i>
+                            <i class="ph ph-list text-dark"></i>
                         </a>
                     </li>
 
