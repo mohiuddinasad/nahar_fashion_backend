@@ -45,7 +45,7 @@
                                 @error('site_logo') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 <div class="mt-2">
                                     @if($setting->site_logo)
-                                        <img id="logo_preview" src="{{ Storage::url($setting->site_logo) }}"
+                                        <img id="logo_preview" src="{{ asset($globalSetting->site_logo) }}" alt="logo preview"
                                              class="img-thumbnail" style="height:80px; object-fit:contain;">
                                     @else
                                         <img id="logo_preview" src="#" class="img-thumbnail d-none"
@@ -63,7 +63,7 @@
                                 @error('site_favicon') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 <div class="mt-2">
                                     @if($setting->site_favicon)
-                                        <img id="favicon_preview" src="{{ Storage::url($setting->site_favicon) }}"
+                                        <img id="favicon_preview" src="{{ asset($globalSetting->site_favicon) }}" alt="favicon preview"
                                              class="img-thumbnail" style="height:48px; object-fit:contain;">
                                     @else
                                         <img id="favicon_preview" src="#" class="img-thumbnail d-none"

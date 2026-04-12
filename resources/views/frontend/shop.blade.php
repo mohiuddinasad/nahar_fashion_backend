@@ -36,11 +36,13 @@
                         @php
                             $prices = [
                                 '' => 'All Price',
-                                '0-100' => '$0 - $100',
-                                '100-200' => '$100 - $200',
-                                '200-300' => '$200 - $300',
-                                '300-400' => '$300 - $400',
-                                '400-500' => '$400 - $500',
+                                '0-500' => '৳ 0 - ৳ 500',
+                                '500-1000' => '৳ 500 - ৳ 1000',
+                                '1000-1500' => '৳ 1000 - ৳ 1500',
+                                '1500-2000' => '৳ 1500 - ৳ 2000',
+                                '2000-2500' => '৳ 2000 - ৳ 2500',
+                                '2500-3000' => '৳ 2500 - ৳ 3000',
+                                '3000-4000' => '৳ 3000 - ৳ 4000',
                             ];
                         @endphp
 
@@ -65,24 +67,12 @@
                 <div class="row pb-3">
                     <div class="col-12 pb-1">
                         <form method="GET" action="{{ request()->url() }}"
-                            class="d-flex align-items-center justify-content-between mb-4">
+                            class="d-flex align-items-center justify-content-end mb-4">
                             @if (request('price'))
                                 <input type="hidden" name="price" value="{{ request('price') }}">
                             @endif
 
-                            <div class="input-group position-relative">
-                                <input type="text" class="form-control" name="search" id="liveSearchInput"
-                                    placeholder="Search by name" value="{{ request('search') }}" autocomplete="off">
-                                <div class="input-group-append">
-                                    <button type="submit" class="input-group-text bg-transparent text-primary">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </div>
 
-                                <div id="liveSearchResults" class="list-group shadow"
-                                    style="display:none; position:absolute; top:100%; left:0; right:0; z-index:9999; max-height:400px; overflow-y:auto;">
-                                </div>
-                            </div>
 
                             <div class="dropdown ml-4">
                                 <button class="btn border dropdown-toggle" type="button" data-toggle="dropdown"
@@ -120,7 +110,7 @@
                                 </div>
                                 <div class="product-image">
                                     <a href="{{ route('frontend.product-details', $product->slug) }}">
-                                        <img src="{{ Storage::url($product->productImage->first()->image_name) }}"
+                                        <img src="{{ asset($product->productImage->first()?->image_name) }}"
                                             alt="{{ $product->name }}">
                                     </a>
                                     <div class="product-actions">
@@ -137,7 +127,7 @@
                                     </div>
                                 </div>
                                 <div class="product-info">
-                                    <h6 class="product-title">{{ $product->name }}</h6>
+                                    <h6 class="product-title">{{ Str::limit($product->name, 28) }}</h6>
                                     <div class="product-price">
                                         <span class="current-price">৳{{ $product->price }}</span>
                                         @if ($product->discount_price > 0)
@@ -149,7 +139,7 @@
                                         <button class="add-to-cart-btn out_stock" style="cursor: not-allowed" disabled
                                             data-id="{{ $product->id }}" data-name="{{ $product->name }}"
                                             data-price="{{ $product->price }}"
-                                            data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
+                                            data-image="{{ asset($product->productImage->first()?->image_name) }}"
                                             data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
                                             <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>
                                             <span>Out of Stock</span>
@@ -159,7 +149,7 @@
                                             onclick="openProductPopup(this)" data-id="{{ $product->id }}"
                                             data-name="{{ $product->name }}"
                                             data-price="{{ $product->price }}"
-                                            data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
+                                            data-image="{{ asset($product->productImage->first()?->image_name) }}"
                                             data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
                                             <iconify-icon icon="bx:cart" width="24" height="24"></iconify-icon>
                                             <span>Add to Cart</span>

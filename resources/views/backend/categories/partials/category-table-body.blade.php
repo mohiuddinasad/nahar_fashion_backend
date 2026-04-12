@@ -5,7 +5,7 @@
         </td>
         <td>
             @if($category->category_image)
-                <img src="{{ Storage::url($category->category_image) }}"
+                <img src="{{ asset($category->category_image) }}"
                      class="cat-img" alt="{{ $category->name }}">
             @else
                 <div class="cat-img-placeholder">—</div>

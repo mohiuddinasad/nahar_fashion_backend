@@ -9,7 +9,6 @@ use App\Models\Backend\Products\Product;
 use App\Models\Backend\Products\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ProductController extends Controller
@@ -68,16 +67,19 @@ class ProductController extends Controller
 
             $product = Product::create($data);
 
-            // Save images
+            // Save images (uploads system)
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
-                    $path = $image->store('products', 'public');
-                    $product->productImage()->create(['image_name' => $path]);
+
+                    $filename = time().'_'.$image->getClientOriginalName();
+                    $image->move(public_path('uploads/products'), $filename);
+
+                    $product->productImage()->create([
+                        'image_name' => 'uploads/products/'.$filename,
+                    ]);
                 }
             }
 
-            // FIX: use array_values() to re-index the variants array
-            // This prevents "Undefined array key" when rows are deleted in browser
             $variants = array_values($request->input('variants', []));
             foreach ($variants as $variant) {
                 if (! empty($variant['variant_name']) && $variant['total_price'] !== '') {
@@ -123,24 +125,32 @@ class ProductController extends Controller
             // Add new images
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
-                    $path = $image->store('products', 'public');
-                    $product->productImage()->create(['image_name' => $path]);
+
+                    $filename = time().'_'.$image->getClientOriginalName();
+                    $image->move(public_path('uploads/products'), $filename);
+
+                    $product->productImage()->create([
+                        'image_name' => 'uploads/products/'.$filename,
+                    ]);
                 }
             }
 
             // Delete checked images
             if ($request->has('delete_images')) {
                 $toDelete = ProductImage::whereIn('id', $request->delete_images)->get();
+
                 foreach ($toDelete as $img) {
-                    Storage::disk('public')->delete($img->image_name);
+                    if ($img->image_name && file_exists(public_path($img->image_name))) {
+                        unlink(public_path($img->image_name));
+                    }
                     $img->delete();
                 }
             }
 
-            // FIX: use array_values() to re-index the variants array
-            // This prevents "Undefined array key" when rows are deleted in browser
+            // Variants reset
             $product->productVariant()->delete();
             $variants = array_values($request->input('variants', []));
+
             foreach ($variants as $variant) {
                 if (! empty($variant['variant_name']) && $variant['total_price'] !== '') {
                     $product->productVariant()->create([
@@ -165,8 +175,11 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
+        // Delete images from folder
         foreach ($product->productImage as $img) {
-            Storage::disk('public')->delete($img->image_path);
+            if ($img->image_name && file_exists(public_path($img->image_name))) {
+                unlink(public_path($img->image_name));
+            }
         }
 
         $product->productImage()->delete();

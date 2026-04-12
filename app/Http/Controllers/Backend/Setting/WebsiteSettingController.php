@@ -5,29 +5,29 @@ namespace App\Http\Controllers\Backend\Setting;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\Setting\WebsiteSetting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class WebsiteSettingController extends Controller
 {
     public function index()
     {
         $setting = WebsiteSetting::instance();
+
         return view('backend.settings.index', compact('setting'));
     }
 
     public function update(Request $request)
     {
         $request->validate([
-            'site_name'         => 'required|string|max:255',
-            'site_logo'         => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
-            'site_favicon'      => 'nullable|image|mimes:png,ico,jpg|max:512',
-            'contact_phone'     => 'nullable|string|max:20',
-            'contact_email'     => 'nullable|email|max:255',
-            'contact_address'   => 'nullable|string|max:500',
-            'meta_title'        => 'nullable|string|max:255',
-            'meta_description'  => 'nullable|string|max:500',
-            'meta_keywords'     => 'nullable|string|max:255',
-            'meta_image'        => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
+            'site_name' => 'required|string|max:255',
+            'site_logo' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
+            'site_favicon' => 'nullable|image|mimes:png,ico,jpg|max:512',
+            'contact_phone' => 'nullable|string|max:20',
+            'contact_email' => 'nullable|email|max:255',
+            'contact_address' => 'nullable|string|max:500',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+            'meta_keywords' => 'nullable|string|max:255',
+            'meta_image' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
         ]);
 
         $setting = WebsiteSetting::instance();
@@ -42,33 +42,55 @@ class WebsiteSettingController extends Controller
             'meta_keywords',
         ]);
 
-        // Handle site_logo upload
+        // ✅ Site Logo Upload
         if ($request->hasFile('site_logo')) {
-            if ($setting->site_logo && Storage::disk('public')->exists($setting->site_logo)) {
-                Storage::disk('public')->delete($setting->site_logo);
+
+            // delete old
+            if ($setting->site_logo && file_exists(public_path($setting->site_logo))) {
+                unlink(public_path($setting->site_logo));
             }
-            $data['site_logo'] = $request->file('site_logo')->store('settings', 'public');
+
+            $file = $request->file('site_logo');
+            $filename = uniqid().'_'.$file->getClientOriginalName();
+
+            $file->move(public_path('uploads/settings'), $filename);
+
+            $data['site_logo'] = 'uploads/settings/'.$filename;
         }
 
-        // Handle favicon upload
+        // ✅ Favicon Upload
         if ($request->hasFile('site_favicon')) {
-            if ($setting->site_favicon && Storage::disk('public')->exists($setting->site_favicon)) {
-                Storage::disk('public')->delete($setting->site_favicon);
+
+            if ($setting->site_favicon && file_exists(public_path($setting->site_favicon))) {
+                unlink(public_path($setting->site_favicon));
             }
-            $data['site_favicon'] = $request->file('site_favicon')->store('settings', 'public');
+
+            $file = $request->file('site_favicon');
+            $filename = uniqid().'_'.$file->getClientOriginalName();
+
+            $file->move(public_path('uploads/settings'), $filename);
+
+            $data['site_favicon'] = 'uploads/settings/'.$filename;
         }
 
-        // Handle meta image upload
+        // ✅ Meta Image Upload
         if ($request->hasFile('meta_image')) {
-            if ($setting->meta_image && Storage::disk('public')->exists($setting->meta_image)) {
-                Storage::disk('public')->delete($setting->meta_image);
+
+            if ($setting->meta_image && file_exists(public_path($setting->meta_image))) {
+                unlink(public_path($setting->meta_image));
             }
-            $data['meta_image'] = $request->file('meta_image')->store('settings', 'public');
+
+            $file = $request->file('meta_image');
+            $filename = uniqid().'_'.$file->getClientOriginalName();
+
+            $file->move(public_path('uploads/settings'), $filename);
+
+            $data['meta_image'] = 'uploads/settings/'.$filename;
         }
 
         $setting->update($data);
 
         return redirect()->route('dashboard.settings.index')
-                         ->with('success', 'Settings updated successfully!');
+            ->with('success', 'Settings updated successfully!');
     }
 }
