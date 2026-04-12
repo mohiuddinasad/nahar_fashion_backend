@@ -22,7 +22,7 @@
                         <form action="{{ route('frontend.track-order.track') }}" method="POST">
                             @csrf
 
-                           
+
 
                             <div class="form-group mb-4">
                                 <label class="font-weight-medium">Order Number or Phone Number <span
@@ -148,7 +148,7 @@
                             @foreach ($order->items as $item)
                                 <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
                                     @if ($item->product_image)
-                                        <img src="{{ asset('storage/' . $item->product_image) }}"
+                                        <img src="{{ asset($item->product_image) }}" alt="{{ $item->product_name }}"
                                             style="width:65px; height:65px; object-fit:cover; border-radius:8px;"
                                             class="mr-3">
                                     @else

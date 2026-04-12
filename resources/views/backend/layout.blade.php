@@ -15,7 +15,7 @@
     <meta name="author" content="codedthemes" />
 
     <!-- [Favicon] icon -->
-    <link rel="icon" href="{{ Storage::url($globalSetting->site_favicon) }}" type="image/x-icon" />
+    <link rel="icon" href="{{ asset($globalSetting->site_favicon) }}" type="image/x-icon" />
 
     <!-- map-vector css -->
     <link rel="stylesheet" href="{{ asset('backend/assets/css/plugins/jsvectormap.min.css') }}" />
@@ -58,7 +58,7 @@
             <div class="m-header">
                 <a href="{{ route('dashboard') }}" class="b-brand text-primary">
                     <!-- ========   Change your logo from here   ============ -->
-                    <img src="{{ Storage::url($globalSetting->site_logo) }}" alt="logo image" class="logo-lg" />
+                    <img src="{{ asset($globalSetting->site_logo) }}" alt="logo image" class="logo-lg" />
                 </a>
             </div>
             <div class="navbar-content">
@@ -146,7 +146,7 @@
         <div class="m-header">
             <a href="{{ route('frontend.home') }}" class="b-brand text-primary">
                 <!-- ========   Change your logo from here   ============ -->
-                <img src="{{ Storage::url($globalSetting->site_logo) }}" alt="logo image" class="logo-lg" />
+                <img src="{{ asset($globalSetting->site_logo) }}" alt="logo image" class="logo-lg" />
             </a>
         </div>
         <div class="header-wrapper"> <!-- [Mobile Media Block] start -->

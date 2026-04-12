@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Backend\Products\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
@@ -54,8 +53,17 @@ class CategoryController extends Controller
         $data['slug'] = $data['slug'] ?? Str::slug($data['name']);
 
         if ($request->hasFile('category_image')) {
-            $data['category_image'] = $request->file('category_image')
-                ->store('categories', 'public');
+
+            $file = $request->file('category_image');
+
+            // unique name generate
+            $filename = time().'_'.$file->getClientOriginalName();
+
+            // move file to public/uploads/categories
+            $file->move(public_path('uploads/categories'), $filename);
+
+            // save path in DB
+            $data['category_image'] = 'uploads/categories/'.$filename;
         }
 
         Category::create($data);
@@ -80,11 +88,22 @@ class CategoryController extends Controller
         $data['slug'] = $data['slug'] ?? Str::slug($data['name']);
 
         if ($request->hasFile('category_image')) {
-            if ($category->category_image) {
-                Storage::disk('public')->delete($category->category_image);
+
+            // old image delete
+            if ($category->category_image && file_exists(public_path($category->category_image))) {
+                unlink(public_path($category->category_image));
             }
-            $data['category_image'] = $request->file('category_image')
-                ->store('categories', 'public');
+
+            $file = $request->file('category_image');
+
+            // unique filename
+            $filename = time().'_'.$file->getClientOriginalName();
+
+            // move to uploads folder
+            $file->move(public_path('uploads/categories'), $filename);
+
+            // save path
+            $data['category_image'] = 'uploads/categories/'.$filename;
         }
 
         $category->update($data);
@@ -95,8 +114,9 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
-        if ($category->category_image) {
-            Storage::disk('public')->delete($category->category_image);
+        // delete image file
+        if ($category->category_image && file_exists(public_path($category->category_image))) {
+            unlink(public_path($category->category_image));
         }
 
         $category->delete();

@@ -4,17 +4,30 @@
 @push('backend_css')
     <style>
         @media (max-width: 992px) {
-            .table_card{
+            .table_card {
                 overflow-x: auto;
-
             }
-            .table_card .card-body{
+            .table_card .card-body {
                 width: max-content;
             }
-
-            .status{
+            .status {
                 margin-bottom: 10px;
             }
+        }
+
+        /* Bulk delete bar */
+        #bulkActionBar {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 8px 16px;
+            margin-bottom: 12px;
+        }
+        #bulkActionBar.visible {
+            display: flex;
         }
     </style>
 @endpush
@@ -66,11 +79,32 @@
                             @endforeach
                         </select>
                     </div>
-
                 </div>
             </div>
-
         </form>
+
+        {{-- Bulk Action Bar --}}
+        <div id="bulkActionBar">
+            <span id="selectedLabel" class="fw-semibold text-dark"></span>
+            <form id="bulkDeleteForm"
+                  action="{{ route('dashboard.orders.bulk-delete') }}"
+                  method="POST"
+                  onsubmit="return confirmBulkDelete()">
+                @csrf
+                @method('DELETE')
+                <div id="selectedIdsContainer"></div>
+                <button type="submit" class="btn btn-danger btn-sm">🗑 Delete Selected</button>
+            </form>
+            <button type="button" onclick="clearSelection()" class="btn btn-secondary btn-sm">Cancel</button>
+        </div>
+
+        {{-- Session Message --}}
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
 
         {{-- Table --}}
         <div class="card table_card">
@@ -78,6 +112,9 @@
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
+                            <th style="width:40px;">
+                                <input type="checkbox" id="selectAll" class="form-check-input" title="Select All">
+                            </th>
                             <th>Order #</th>
                             <th>Customer</th>
                             <th>Items</th>
@@ -91,6 +128,10 @@
                     <tbody>
                         @forelse($orders as $order)
                             <tr>
+                                <td>
+                                    <input type="checkbox" class="form-check-input order-checkbox"
+                                           value="{{ $order->id }}">
+                                </td>
                                 <td><strong>{{ $order->order_number }}</strong></td>
                                 <td>
                                     {{ $order->name }}<br>
@@ -99,14 +140,12 @@
                                 <td>{{ $order->items->count() }} item(s)</td>
                                 <td>৳{{ number_format($order->total_amount, 2) }}</td>
                                 <td>
-                                    <span
-                                        class="badge bg-{{ $order->payment_status == 'paid' ? 'success' : ($order->payment_status == 'failed' ? 'danger' : 'warning') }}">
+                                    <span class="badge bg-{{ $order->payment_status == 'paid' ? 'success' : ($order->payment_status == 'failed' ? 'danger' : 'warning') }}">
                                         {{ ucfirst($order->payment_status) }}
                                     </span>
                                 </td>
                                 <td>
-                                    <span
-                                        class="badge bg-{{ $order->order_status == 'delivered' ? 'success' : ($order->order_status == 'cancelled' ? 'danger' : ($order->order_status == 'processing' ? 'info' : 'warning')) }}">
+                                    <span class="badge bg-{{ $order->order_status == 'delivered' ? 'success' : ($order->order_status == 'cancelled' ? 'danger' : ($order->order_status == 'processing' ? 'info' : 'warning')) }}">
                                         {{ ucfirst($order->order_status) }}
                                     </span>
                                 </td>
@@ -118,7 +157,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center py-4 text-muted">No orders found.</td>
+                                <td colspan="9" class="text-center py-4 text-muted">No orders found.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -130,23 +169,68 @@
     </div>
 
     <script>
-        // Auto-submit on dropdown change
-        document.getElementById('orderStatusSelect').addEventListener('change', function() {
+        // ── Filter auto-submit ───────────────────────────────────────────
+        document.getElementById('orderStatusSelect').addEventListener('change', function () {
             document.getElementById('filterForm').submit();
         });
-
-        document.getElementById('paymentStatusSelect').addEventListener('change', function() {
+        document.getElementById('paymentStatusSelect').addEventListener('change', function () {
             document.getElementById('filterForm').submit();
         });
-
-        // Auto-submit on search with debounce (waits 500ms after user stops typing)
         let searchTimer;
-        document.getElementById('searchInput').addEventListener('input', function() {
+        document.getElementById('searchInput').addEventListener('input', function () {
             clearTimeout(searchTimer);
-            searchTimer = setTimeout(function() {
-                document.getElementById('filterForm').submit();
-            }, 500);
+            searchTimer = setTimeout(() => document.getElementById('filterForm').submit(), 500);
         });
+
+        // ── Bulk Delete Logic ────────────────────────────────────────────
+        const selectAll     = document.getElementById('selectAll');
+        const checkboxes    = document.querySelectorAll('.order-checkbox');
+        const bulkActionBar = document.getElementById('bulkActionBar');
+        const selectedLabel = document.getElementById('selectedLabel');
+        const idsContainer  = document.getElementById('selectedIdsContainer');
+
+        function updateBulkUI() {
+            const checked = document.querySelectorAll('.order-checkbox:checked');
+            const count   = checked.length;
+
+            if (count > 0) {
+                bulkActionBar.classList.add('visible');
+                selectedLabel.textContent = count + ' orders selected';
+            } else {
+                bulkActionBar.classList.remove('visible');
+            }
+
+            selectAll.indeterminate = count > 0 && count < checkboxes.length;
+            selectAll.checked       = count > 0 && count === checkboxes.length;
+
+            idsContainer.innerHTML = '';
+            checked.forEach(cb => {
+                const input = document.createElement('input');
+                input.type  = 'hidden';
+                input.name  = 'order_ids[]';
+                input.value = cb.value;
+                idsContainer.appendChild(input);
+            });
+        }
+
+        selectAll.addEventListener('change', function () {
+            checkboxes.forEach(cb => cb.checked = this.checked);
+            updateBulkUI();
+        });
+
+        checkboxes.forEach(cb => cb.addEventListener('change', updateBulkUI));
+
+        function clearSelection() {
+            checkboxes.forEach(cb => cb.checked = false);
+            selectAll.checked       = false;
+            selectAll.indeterminate = false;
+            updateBulkUI();
+        }
+
+        function confirmBulkDelete() {
+            const count = document.querySelectorAll('.order-checkbox:checked').length;
+            return confirm('Are you sure you want to delete ' + count + ' selected order(s)?');
+        }
     </script>
 
 @endsection

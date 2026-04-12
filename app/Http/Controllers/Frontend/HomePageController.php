@@ -33,7 +33,8 @@ class HomePageController extends Controller
         $topBanners = TopBanner::with('category')->get();
         $bottomBanners = BottomBanner::with('category')->get();
         $globalSetting = WebsiteSetting::instance();
-        return view('welcome', compact('products', 'categories', 'featuredProducts', 'newProducts', 'wishlistCount', 'topBanners', 'bottomBanners','globalSetting'));
+
+        return view('welcome', compact('products', 'categories', 'featuredProducts', 'newProducts', 'wishlistCount', 'topBanners', 'bottomBanners', 'globalSetting'));
     }
 
     public function store(Request $request)
@@ -58,7 +59,7 @@ class HomePageController extends Controller
         try {
             // Calculate totals
             $subtotal = collect($cart)->sum(fn ($item) => $item['price'] * $item['qty']);
-            $shippingCost = 0; // flat rate — adjust as needed
+            $shippingCost = 0;
             $total = $subtotal + $shippingCost;
 
             // Create order
@@ -92,13 +93,20 @@ class HomePageController extends Controller
                 ]);
             }
 
-            // Save uploaded images
+            // ✅ FIXED: Save uploaded images (uploads system)
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
-                    $path = $image->store('order-images', 'public');
+
+                    // unique filename
+                    $filename = uniqid().'_'.$image->getClientOriginalName();
+
+                    // move to uploads/order-images
+                    $image->move(public_path('uploads/order-images'), $filename);
+
+                    // save path in DB
                     OrderImage::create([
                         'order_id' => $order->id,
-                        'image_path' => $path,
+                        'image_path' => 'uploads/order-images/'.$filename,
                     ]);
                 }
             }
@@ -106,7 +114,8 @@ class HomePageController extends Controller
             DB::commit();
             session()->forget('cart');
 
-            return view('frontend.orderSuccess', compact('order'))->with('success', 'Your order has been placed successfully!');
+            return view('frontend.orderSuccess', compact('order'))
+                ->with('success', 'Your order has been placed successfully!');
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -123,6 +132,4 @@ class HomePageController extends Controller
 
         return view('frontend.orderSuccess', compact('order'));
     }
-
-
 }
