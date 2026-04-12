@@ -37,7 +37,7 @@
                 <div class="card-body d-flex flex-wrap gap-3">
                     @foreach($product->productImage as $img)
                     <div class="text-center">
-                        <img src="{{ Storage::url($img->image_name) }}"
+                        <img src="{{ asset($img->image_name) }}" alt="Product Image"
                              width="100" height="100" style="object-fit:cover;" class="rounded border">
                         <br>
                         <label class="mt-1 text-danger" style="cursor:pointer;">

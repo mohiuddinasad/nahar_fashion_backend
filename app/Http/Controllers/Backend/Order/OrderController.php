@@ -14,10 +14,10 @@ class OrderController extends Controller
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('order_number', 'like', '%' . $request->search . '%')
-                  ->orWhere('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%')
-                  ->orWhere('phone', 'like', '%' . $request->search . '%');
+                $q->where('order_number', 'like', '%'.$request->search.'%')
+                    ->orWhere('name', 'like', '%'.$request->search.'%')
+                    ->orWhere('email', 'like', '%'.$request->search.'%')
+                    ->orWhere('phone', 'like', '%'.$request->search.'%');
             });
         }
 
@@ -32,19 +32,20 @@ class OrderController extends Controller
         $orders = $query->paginate(15)->withQueryString();
 
         $stats = [
-            'total'      => Order::count(),
-            'pending'    => Order::where('order_status', 'pending')->count(),
+            'total' => Order::count(),
+            'pending' => Order::where('order_status', 'pending')->count(),
             'processing' => Order::where('order_status', 'processing')->count(),
-            'delivered'  => Order::where('order_status', 'delivered')->count(),
-            'cancelled'  => Order::where('order_status', 'cancelled')->count(),
+            'delivered' => Order::where('order_status', 'delivered')->count(),
+            'cancelled' => Order::where('order_status', 'cancelled')->count(),
         ];
+
         return view('backend.orders.index', compact('orders', 'stats'));
     }
-
 
     public function show(Order $order)
     {
         $order->load(['items', 'images']);
+
         return view('backend.orders.show', compact('order'));
     }
 
@@ -73,7 +74,37 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         $order->delete();
+
         return redirect()->route('dashboard.orders.order-list')
-                         ->with('success', 'Order deleted.');
+            ->with('success', 'Order deleted.');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'order_ids' => ['required', 'array', 'min:1'],
+            'order_ids.*' => ['integer', 'exists:orders,id'],
+        ]);
+
+        $orders = Order::whereIn('id', $request->order_ids)->get();
+
+        foreach ($orders as $order) {
+            // Related images delete (local storage হলে)
+            foreach ($order->images as $img) {
+                if (file_exists(public_path($img->image_path))) {
+                    unlink(public_path($img->image_path));
+                }
+                $img->delete();
+            }
+
+            $order->items()->delete();
+            $order->delete();
+        }
+
+        $count = count($request->order_ids);
+
+        return redirect()
+            ->route('dashboard.orders.order-list')
+            ->with('success', $count.' order(s) deleted successfully.');
     }
 }

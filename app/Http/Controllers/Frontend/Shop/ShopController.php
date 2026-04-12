@@ -63,20 +63,26 @@ class ShopController extends Controller
         // Price filter
         if ($request->filled('price')) {
             switch ($request->price) {
-                case '0-100':
-                    $query->whereBetween('price', [0, 100]);
+                case '0-500':
+                    $query->whereBetween('price', [0, 500]);
                     break;
-                case '100-200':
-                    $query->whereBetween('price', [100, 200]);
+                case '500-1000':
+                    $query->whereBetween('price', [500, 1000]);
                     break;
-                case '200-300':
-                    $query->whereBetween('price', [200, 300]);
+                case '1000-1500':
+                    $query->whereBetween('price', [1000, 1500]);
                     break;
-                case '300-400':
-                    $query->whereBetween('price', [300, 400]);
+                case '1500-2000':
+                    $query->whereBetween('price', [1500, 2000]);
                     break;
-                case '400-500':
-                    $query->whereBetween('price', [400, 500]);
+                case '2000-2500':
+                    $query->whereBetween('price', [2000, 2500]);
+                    break;
+                case '2500-3000':
+                    $query->whereBetween('price', [2500, 3000]);
+                    break;
+                case '3000-4000':
+                    $query->whereBetween('price', [3000, 4000]);
                     break;
             }
         }
@@ -115,8 +121,8 @@ class ShopController extends Controller
                     'name' => $product->name,
                     'price' => $product->price,
                     'slug' => $product->slug,
-                    'image' => $product->productImage->first()
-                        ? asset('storage/'.$product->productImage->first()->image_name)
+                    'image' => $product->productImage->first()?->image_name
+                        ? asset($product->productImage->first()->image_name)
                         : asset('assets/img/no-image.png'),
                 ];
             });

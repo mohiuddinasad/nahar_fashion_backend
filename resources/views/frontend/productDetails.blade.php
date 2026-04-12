@@ -197,7 +197,7 @@
 
                         @foreach ($product->productImage as $image)
                             <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                                <img class="w-100 h-100" src="{{ Storage::url($image->image_name) }}" alt="Image">
+                                <img class="w-100 h-100" src="{{ asset($image->image_name) }}" alt="Image">
                             </div>
                         @endforeach
 
@@ -328,7 +328,7 @@
                     $message .= 'Hello! I am interested in this product.';
                 @endphp
                 <div class="order_btn">
-                    <a href="https://wa.me/8801761955564?text={{ urlencode($message) }}" target="_blank">
+                    <a href="https://wa.me/{{ $globalSetting->contact_phone }}?text={{ urlencode($message) }}" target="_blank">
                         <button class="whatsapp-btn mt-3">
                             Order via WhatsApp
                         </button>
@@ -502,7 +502,7 @@
                                     </div>
                                     <div class="product-image">
                                         <a href="{{ route('frontend.product-details', $related->slug) }}"><img
-                                                src="{{ Storage::url($related->productImage->first()->image_name ?? '') }}"
+                                                src="{{ asset($related->productImage->first()?->image_name) }}"
                                                 alt="Colorful Stylish Shirt"></a>
                                         <div class="product-actions">
                                             @php
@@ -518,7 +518,7 @@
                                         </div>
                                     </div>
                                     <div class="product-info">
-                                        <h6 class="product-title">{{ $related->name }}</h6>
+                                        <h6 class="product-title">{{ Str::limit($related->name, 28) }}</h6>
                                         <div class="product-price">
                                             <span class="current-price">৳{{ number_format($related->price, 2) }}</span>
                                             @if ($related->discount_price > 0)
@@ -533,7 +533,7 @@
                                             <button class="add-to-cart-btn out_stock" style="cursor: not-allowed" disabled
                                                 data-id="{{ $related->id }}" data-name="{{ $related->name }}"
                                                 data-price="{{ $related->price }}"
-                                                data-image="{{ $related->productImage->first() ? asset('storage/' . $related->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
+                                                data-image="{{ asset($related->productImage->first()?->image_name) }}"
                                                 data-variants="{{ json_encode($related->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
                                                 <iconify-icon icon="bx:cart" width="24"
                                                     height="24"></iconify-icon>
@@ -543,7 +543,7 @@
                                             <button class="add-to-cart-btn" style="cursor: pointer"
                                                 onclick="openProductPopup(this)" data-id="{{ $related->id }}"
                                                 data-name="{{ $related->name }}" data-price="{{ $related->price }}"
-                                                data-image="{{ $related->productImage->first() ? asset('storage/' . $related->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
+                                                data-image="{{ asset($related->productImage->first()?->image_name) }}"
                                                 data-variants="{{ json_encode($related->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
                                                 <iconify-icon icon="bx:cart" width="24"
                                                     height="24"></iconify-icon>

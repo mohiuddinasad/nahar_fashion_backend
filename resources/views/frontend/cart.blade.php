@@ -56,7 +56,7 @@
                                                 <div class="col-4">
                                                     @if ($data['image'])
                                                         <img style="width:70px; height:70px; object-fit:cover; border-radius:6px;"
-                                                            src="{{ asset('storage/' . $data['image']) }}"
+                                                            src="{{ asset($data['image']) }}"
                                                             alt="{{ $data['name'] }}">
                                                     @else
                                                         <img style="width:70px; height:70px; object-fit:cover; border-radius:6px;"
@@ -64,7 +64,7 @@
                                                     @endif
                                                 </div>
                                                 <div class="col-8 p-0 text-left">
-                                                    <h6 class="mb-1">{{ $data['name'] }}</h6>
+                                                    <h6 class="mb-1">{{ Str::limit($data['name'], 28) }}</h6>
                                                     @if (!empty($data['variant_name']))
                                                         <small class="text-muted">Variant:
                                                             {{ $data['variant_name'] }}</small>

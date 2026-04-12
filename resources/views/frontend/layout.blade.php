@@ -26,7 +26,7 @@
     @yield('meta')
 
     <!-- Favicon -->
-    <link href="{{ Storage::url($globalSetting->site_favicon) }}" rel="icon">
+    <link href="{{ asset($globalSetting->site_favicon) }}" rel="icon">
     <!-- <link rel="stylesheet" href="./assets/css/bootstrap.min.css"> -->
 
     <!-- Google Web Fonts -->
@@ -55,7 +55,7 @@
         <div class="row align-items-center py-3">
             <div class="col-lg-3 d-none d-lg-block">
                 <a href="" class="text-decoration-none">
-                <img style="width:150px;" src="{{ Storage::url($globalSetting->site_logo) }}" alt="">
+                <img style="width:150px;" src="{{ asset($globalSetting->site_logo) }}" alt="">
                 </a>
             </div>
             <div class="col-lg-6 text-left">
@@ -140,9 +140,8 @@
             </div>
             <div class="col-lg-9">
                 <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
-                    <a href class="text-decoration-none d-block d-lg-none">
-                        <h4 class="m-0 display-5 font-weight-semi-bold">Nahar
-                            Fashion</h4>
+                    <a href="{{ route('frontend.home') }}" class="text-decoration-none d-block d-lg-none">
+                        <img style="width: 150px;" src="{{ asset($globalSetting->site_logo) }}" alt="">
                     </a>
                     <button type="button" class="d-lg-none menu-btn" id="menuBtn">
                         <iconify-icon icon="ic:round-menu" width="24" height="24"></iconify-icon>
@@ -155,7 +154,7 @@
                     <div class="sidebar" id="sidebar">
                         <!-- Sidebar Header -->
                         <div class="sidebar-header">
-                            <img style="width: 140px;" src="{{ asset('frontend/assets/img/logo.png') }}"
+                            <img style="width: 140px;" src="{{ asset($globalSetting->site_logo) }}"
                                 alt="">
                             <button class="close-btn" id="closeBtn">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -480,7 +479,7 @@
             <div class="row pt-5">
                 <div class="col-lg-4 col-md-12 mb-5 pr-3 pr-xl-5">
                     <a href="{{ route('frontend.home') }}" class="text-decoration-none mb-2">
-                        <img style="width:200px;" src="{{ Storage::url($globalSetting->site_logo) }}" alt="">
+                        <img style="width:200px;" src="{{ asset($globalSetting->site_logo) }}" alt="">
                     </a>
                     <br>
                     <p class="pt-2">We produce high quality textile products. Our

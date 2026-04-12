@@ -32,7 +32,7 @@
             <div class="card mt-3">
                 <div class="card-header fw-bold">Current Image</div>
                 <div class="card-body">
-                    <img src="{{ Storage::url($category->category_image) }}"
+                    <img src="{{ asset($category->category_image) }}"
                          width="120" height="120" style="object-fit:cover;" class="rounded border">
                     <p class="text-muted mt-2 mb-0">
                         <small>Upload a new image above to replace this one.</small>

@@ -42,14 +42,14 @@
                                         <div class="row align-items-center">
                                             <div class="col-4">
                                                 <img class="rounded" style="width: 70px;"
-                                                    src="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
+                                                    src="{{ asset($product->productImage->first()?->image_name) }}"
                                                     alt="{{ $product->name }}">
                                             </div>
                                             <div class="name col-8 p-0 px-md-3" style="text-align: left;">
                                                 <h6 class="m-0">
                                                     <a href="{{ route('frontend.product-details', $product->slug) }}"
                                                         class="text-dark">
-                                                        {{ $product->name }}
+                                                        {{ Str::limit($product->name, 28) }}
                                                     </a>
                                                 </h6>
                                             </div>
@@ -71,7 +71,7 @@
                                             <button class="btn btn-sm btn-primary" onclick="openProductPopup(this)"
                                                 data-id="{{ $product->id }}" data-name="{{ $product->name }}"
                                                 data-price="{{ $product->price }}"
-                                                data-image="{{ $product->productImage->first() ? asset('storage/' . $product->productImage->first()->image_name) : asset('assets/img/no-image.png') }}"
+                                                data-image="{{ asset($product->productImage->first()?->image_name) }}"
                                                 data-variants="{{ json_encode($product->productVariant->map(fn($v) => ['id' => $v->id, 'name' => $v->variant_name, 'price' => $v->total_price])) }}">
                                                 Add to Cart
                                             </button>

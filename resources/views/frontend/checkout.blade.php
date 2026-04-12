@@ -171,7 +171,7 @@
                                                 <div class="col-4">
                                                     @if ($data['image'])
                                                         <img class="img-fluid" style=" object-fit:cover; border-radius:6px;"
-                                                            src="{{ asset('storage/' . $data['image']) }}"
+                                                            src="{{ asset($data['image']) }}"
                                                             alt="{{ $data['name'] }}">
                                                     @else
                                                         <img style="width:70px; height:70px; object-fit:cover; border-radius:6px;"

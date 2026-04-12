@@ -52,12 +52,12 @@ Route::prefix('dashboard/')->name('dashboard.')->middleware(['role:super_admin|a
     });
 
     Route::prefix('categories')->name('categories.')->middleware(['role:super_admin|admin|manager'])->group(function () {
-        Route::get('/category-list', [CategoryController::class, 'index'])->name('category-list');
-        Route::get('/category-create', [CategoryController::class, 'create'])->name('category-create');
-        Route::post('/category-store', [CategoryController::class, 'store'])->name('category-store');
-        Route::get('/category-edit/{category}', [CategoryController::class, 'edit'])->name('category-edit');
-        Route::put('/category-update/{category}', [CategoryController::class, 'update'])->name('category-update');
-        Route::delete('/category-delete/{category}', [CategoryController::class, 'destroy'])->name('category-delete');
+        Route::get('/category-list', [CategoryController::class, 'index'])->name('category-list')->middleware('permission:categories.view');
+        Route::get('/category-create', [CategoryController::class, 'create'])->name('category-create')->middleware('permission:categories.create');
+        Route::post('/category-store', [CategoryController::class, 'store'])->name('category-store')->middleware('permission:categories.create');
+        Route::get('/category-edit/{category}', [CategoryController::class, 'edit'])->name('category-edit')->middleware('permission:categories.edit');
+        Route::put('/category-update/{category}', [CategoryController::class, 'update'])->name('category-update')->middleware('permission:categories.edit');
+        Route::delete('/category-delete/{category}', [CategoryController::class, 'destroy'])->name('category-delete')->middleware('permission:categories.delete');
         Route::get('/category-search', [CategoryController::class, 'search'])->name('category-search');
         // web.php
         Route::get('/dashboard/categories/ajax-search', [CategoryController::class, 'ajaxSearch'])
@@ -65,13 +65,13 @@ Route::prefix('dashboard/')->name('dashboard.')->middleware(['role:super_admin|a
     });
 
     // ─── Products ─────────────────────────────────────────────────
-    Route::prefix('products')->name('products.')->middleware(['role:super_admin|admin|manager'])->group(function () {
-        Route::get('/product-list', [ProductController::class, 'index'])->name('product-list');
-        Route::get('/product-create', [ProductController::class, 'create'])->name('product-create');
+    Route::prefix('products')->name('products.')->group(function () {
+        Route::get('/product-list', [ProductController::class, 'index'])->name('product-list')->middleware('permission:products.view');
+        Route::get('/product-create', [ProductController::class, 'create'])->name('product-create')->middleware('permission:products.create');
         Route::post('/product-store', [ProductController::class, 'store'])->name('product-store');
-        Route::get('/product-edit/{product}', [ProductController::class, 'edit'])->name('product-edit');
+        Route::get('/product-edit/{product}', [ProductController::class, 'edit'])->name('product-edit')->middleware('permission:products.edit');
         Route::put('/product-update/{product}', [ProductController::class, 'update'])->name('product-update');
-        Route::delete('/product-delete/{product}', [ProductController::class, 'destroy'])->name('product-delete');
+        Route::delete('/product-delete/{product}', [ProductController::class, 'destroy'])->name('product-delete')->middleware('permission:products.delete');
         Route::get('/product-search', [ProductController::class, 'search'])->name('product-search');
         Route::get('/ajax-search', [ProductController::class, 'ajaxSearch'])
     ->name('ajax-search');
@@ -101,12 +101,14 @@ Route::prefix('dashboard/')->name('dashboard.')->middleware(['role:super_admin|a
     Route::get('/contacts/{contact}', [ContactController::class, 'show'])->name('contacts.show');
     Route::delete('/contacts/{contact}', [ContactController::class, 'destroy'])->name('contacts.destroy');
     // ─── orders Routes ─────────────────────────────────────────────────
-    Route::prefix('orders')->name('orders.')->middleware(['role:super_admin|admin|manager'])->group(function () {
-        Route::get('/order-list', [OrderController::class, 'index'])->name('order-list');
-        Route::get('/order-show/{order}', [OrderController::class, 'show'])->name('order-show');
-        Route::put('/order-status/{order}', [OrderController::class, 'updateStatus'])->name('order-status');
-        Route::put('/payment-status/{order}', [OrderController::class, 'updatePaymentStatus'])->name('payment-status');
-        Route::delete('/order-delete/{order}', [OrderController::class, 'destroy'])->name('order-delete');
+    Route::prefix('orders')->name('orders.')->group(function () {
+        Route::get('/order-list', [OrderController::class, 'index'])->name('order-list')->middleware('permission:orders.view');
+        Route::get('/order-show/{order}', [OrderController::class, 'show'])->name('order-show')->middleware('permission:orders.view');
+        Route::put('/order-status/{order}', [OrderController::class, 'updateStatus'])->name('order-status')->middleware('permission:orders.update-status');
+        Route::put('/payment-status/{order}', [OrderController::class, 'updatePaymentStatus'])->name('payment-status')->middleware('permission:orders.update-status');
+        Route::delete('/order-delete/{order}', [OrderController::class, 'destroy'])->name('order-delete')->middleware('permission:orders.delete');
+        Route::delete('orders/bulk-delete', [OrderController::class, 'bulkDelete'])
+     ->name('bulk-delete');
     });
 
     // ─── Daily Sales ──────────────────────────────────────────────

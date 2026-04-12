@@ -13,7 +13,7 @@
         </td>
         <td>
             @if($product->productImage->first())
-                <img src="{{ Storage::url($product->productImage->first()->image_name) }}"
+                <img src="{{ asset($product->productImage->first()?->image_name ?? 'assets/img/no-image.png') }}"
                      class="product-img" alt="{{ $product->name }}">
             @else
                 <div class="product-img-placeholder">—</div>
@@ -25,7 +25,7 @@
         </td>
         <td class="hide-mobile">
             <div class="price-main">${{ number_format($product->price, 2) }}</div>
-           
+
         </td>
         <td class="hide-mobile">
             <span class="stock-badge {{ $stockClass }}">
